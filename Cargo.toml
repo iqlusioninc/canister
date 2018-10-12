@@ -1,0 +1,28 @@
+[package]
+name        = "canister"
+description = "Deploy binaries from Google Container Registry (gcr.io)"
+version     = "0.0.0"
+authors     = ["Tony Arcieri <tony@iqlusion.io>", "Shella Stephens <shella@iqlusion.io>"]
+license     = "Apache-2.0"
+homepage    = "https://github.com/iqlusioninc/canister"
+readme      = "README.md"
+categories  = ["command-line-utilities"]
+keywords    = ["container", "devops", "docker", "deployment", "systemd"]
+
+[dependencies]
+abscissa = "0.0.5"
+abscissa_derive = "0.0.2"
+failure = "0.1"
+failure_derive = "0.1"
+hex = "0.3"
+hyper = "0.11"
+percent-encoding = "1"
+lazy_static = "1"
+libflate = "0.1"
+log = "0.4"
+reqwest = "0.8"
+serde = "1"
+serde_json = "1"
+serde_derive = "1"
+sha2 = "0.7"
+tar = "0.4"

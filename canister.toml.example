@@ -1,0 +1,6 @@
+project = "awesome-project"
+bucket = "production.appspot.com"
+image =  "bin"
+tag = "latest"
+object = "containers/images"
+path = "/home/app"
