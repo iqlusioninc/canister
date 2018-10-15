@@ -1,6 +1,6 @@
 [[package]]
 name = "abscissa"
-version = "0.0.5"
+version = "0.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "abscissa_derive 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -16,7 +16,7 @@ dependencies = [
  "simplelog 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "term 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "toml 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "zeroize 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zeroize 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -124,7 +124,7 @@ dependencies = [
 name = "canister"
 version = "0.0.1"
 dependencies = [
- "abscissa 0.0.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "abscissa 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "abscissa_derive 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "failure_derive 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1402,14 +1402,14 @@ dependencies = [
 
 [[package]]
 name = "zeroize"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cc 1.0.25 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [metadata]
-"checksum abscissa 0.0.5 (registry+https://github.com/rust-lang/crates.io-index)" = "295fccb80023faabd2622e35c38e98e125287e32f3350b56733c71712d3ebcca"
+"checksum abscissa 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)" = "159a56ddefc6675d47b8063aada781ca621be8c7ac3adfc6520647024fd3461b"
 "checksum abscissa_derive 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "ef4cd3ff1140f337a6d49256197c1455e2fb97ed76b2f220606809974f128814"
 "checksum adler32 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "7e522997b529f05601e05166c07ed17789691f562762c7f3b987263d2dedee5c"
 "checksum arrayref 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "0d382e583f07208808f6b1249e60848879ba3543f57c32277bf52d69c2f0f0ee"
@@ -1570,4 +1570,4 @@ dependencies = [
 "checksum winapi-x86_64-pc-windows-gnu 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 "checksum ws2_32-sys 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d59cefebd0c892fa2dd6de581e937301d8552cb44489cdff035c6187cb63fa5e"
 "checksum xattr 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "244c3741f4240ef46274860397c7c74e50eb23624996930e484c16679633a54c"
-"checksum zeroize 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e0bacecba28e4c0b77ecc0180ae5b74acbcee1220d820312f1f2a61ca9e3034d"
+"checksum zeroize 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "4d9ca03392699478c8ae9240a5b2a9500babb9e1eccc195e347ab06a082d9f20"
