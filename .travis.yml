@@ -30,4 +30,4 @@ script:
 - cargo test --all
 
 # audit
-- cargo audit
+# - cargo audit
