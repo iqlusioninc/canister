@@ -4,6 +4,10 @@ use gcp::{Manifest, Storage, Token};
 use std::process;
 use unpacker::{HexDigest, Unpacker};
 
+use std::fs;
+use std::io;
+use std::os::unix;
+
 #[derive(Debug, Options)]
 pub struct DeployCommand {
     #[options(short = "c", long = "config")]
@@ -30,7 +34,7 @@ impl Callable for DeployCommand {
         let image = &config.image;
         let tag = &config.tag;
         let object_path = &config.object;
-
+        let path = &config.path;
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
@@ -56,7 +60,7 @@ impl Callable for DeployCommand {
             status_err!("Error, unable to download object from bucket: {}", e);
             process::exit(1);
         });
-        let mut unpacker = Unpacker::new(response, image_id);
+        let mut unpacker = Unpacker::new(response, &image_id);
         unpacker.unpack().unwrap_or_else(|e| {
             status_err!("Error, unable to unpack archive: {}", e);
             process::exit(1);
@@ -67,5 +71,13 @@ impl Callable for DeployCommand {
         debug!("hasher result: {}", digest.as_str());
         debug!("layer digest: {}", layer_digest.as_str());
         assert_eq!(digest, layer_digest);
+        let full_path = path.join(image_id.to_string());
+        let full_tag = path.join(tag);
+        if let Err(e) = unix::fs::symlink(&full_path, &full_tag) {
+            if e.kind() == io::ErrorKind::AlreadyExists {
+                fs::remove_file(&full_tag).unwrap();
+                unix::fs::symlink(full_path, full_tag).unwrap();
+            }
+        }
     }
 }
