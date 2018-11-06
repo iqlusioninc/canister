@@ -72,7 +72,7 @@ impl Callable for DeployCommand {
         debug!("layer digest: {}", layer_digest.as_str());
         assert_eq!(digest, layer_digest);
         let full_path = path.join(image_id.to_string());
-        let full_tag = path.join(tag);
+        let full_tag = path.join("current");
         if let Err(e) = unix::fs::symlink(&full_path, &full_tag) {
             if e.kind() == io::ErrorKind::AlreadyExists {
                 fs::remove_file(&full_tag).unwrap();
