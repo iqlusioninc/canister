@@ -1,4 +1,4 @@
-use abscissa::Callable;
+use abscissa::{Callable, GlobalConfig};
 use config::CanisterConfig;
 use std::process::Command;
 
@@ -24,9 +24,15 @@ impl Default for RunCommand {
 
 impl Callable for RunCommand {
     fn call(&self) {
+        let config = CanisterConfig::get_global();
+        let path = &config.run_command.path;
+        let args = &config.run_command.args;
+
         DeployCommand {
             config: self.config.clone(),
             verbose: self.verbose,
         }.call();
+
+        let run_command = Command::new(path.clone()).args(args).spawn();
     }
 }
