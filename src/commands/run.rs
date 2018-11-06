@@ -24,6 +24,9 @@ impl Default for RunCommand {
 
 impl Callable for RunCommand {
     fn call(&self) {
-        DeployCommand{config: self.config.clone(), verbose: self.verbose}.call();
+        DeployCommand {
+            config: self.config.clone(),
+            verbose: self.verbose,
+        }.call();
     }
 }

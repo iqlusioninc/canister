@@ -6,7 +6,9 @@ mod help;
 mod run;
 mod version;
 
-pub use self::{deploy::DeployCommand, help::HelpCommand, run::RunCommand, version::VersionCommand};
+pub use self::{
+    deploy::DeployCommand, help::HelpCommand, run::RunCommand, version::VersionCommand,
+};
 use config::{CanisterConfig, CONFIG_FILE_NAME};
 
 #[derive(Debug, Options)]
@@ -47,8 +49,7 @@ impl LoadConfig<CanisterConfig> for CanisterCommand {
                     .unwrap_or(CONFIG_FILE_NAME),
             )),
             CanisterCommand::Run(run) => Some(PathBuf::from(
-                run
-                    .config
+                run.config
                     .as_ref()
                     .map(|s| s.as_ref())
                     .unwrap_or(CONFIG_FILE_NAME),

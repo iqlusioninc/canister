@@ -16,7 +16,7 @@ pub struct CanisterConfig {
 #[derive(Clone, Deserialize, Debug)]
 pub struct RunCommandConfig {
     pub path: PathBuf,
-    pub args: Vec<String>
+    pub args: Vec<String>,
 }
 
 impl_global_config!(CanisterConfig, GLOBAL_CONFIG);
