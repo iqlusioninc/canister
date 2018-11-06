@@ -1,5 +1,6 @@
 use abscissa::Callable;
 use config::CanisterConfig;
+use std::process::Command;
 
 use super::DeployCommand;
 
