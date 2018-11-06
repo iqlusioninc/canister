@@ -33,6 +33,7 @@ impl Callable for RunCommand {
             verbose: self.verbose,
         }.call();
 
-        let run_command = Command::new(path.clone()).args(args).spawn();
+        let mut run_command = Command::new(path.clone()).args(args).spawn().unwrap();
+        run_command.wait().unwrap();
     }
 }
