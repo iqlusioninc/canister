@@ -15,7 +15,7 @@ pub struct Unpacker<R: Read> {
 }
 
 impl<R: Read> Unpacker<R> {
-    pub fn new(reader: R, imageid: ImageId) -> Self {
+    pub fn new(reader: R, imageid: &ImageId) -> Self {
         let config = CanisterConfig::get_global();
         let path = config.path.join(imageid.to_string());
         let hasher = Hasher::new(reader);
