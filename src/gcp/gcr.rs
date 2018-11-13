@@ -43,15 +43,20 @@ impl Manifest {
         project: &str,
         image: &str,
         tag: &str,
+        proxy: Option<&str>,
     ) -> Result<(ImageId, Self), CanisterError> {
         let mut headers = token.headers(AuthHeader::Basic);
         headers.set(Accept(vec![qitem(
             "application/vnd.docker.distribution.manifest.v2+json".parse()?,
         )]));
 
-        let client = reqwest::Client::builder()
-            .default_headers(headers)
-            .build()?;
+        let client = match proxy {
+            Some(p) => reqwest::Client::builder()
+                .default_headers(headers)
+                .proxy(reqwest::Proxy::http(p)?)
+                .build(),
+            None => reqwest::Client::builder().default_headers(headers).build(),
+        }?;
 
         let url = format!("https://gcr.io/v2/{}/{}/manifests/{}", project, image, tag);
 
