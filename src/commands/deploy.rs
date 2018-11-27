@@ -35,12 +35,13 @@ impl Callable for DeployCommand {
         let tag = &config.tag;
         let object_path = &config.object;
         let path = &config.path;
+        let proxy = config.proxy.as_ref().map(|p| p.as_str());
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
         });
 
-        let (image_id, m) = Manifest::get(&token, project, image, tag).unwrap_or_else(|e| {
+        let (image_id, m) = Manifest::get(&token, project, image, tag, proxy).unwrap_or_else(|e| {
             status_err!("Error, unable to fetch manifest: {}", e);
             process::exit(1);
         });
@@ -56,7 +57,7 @@ impl Callable for DeployCommand {
         debug!("{:?}", &layer_digest);
 
         let object = format!("{}/sha256:{}", object_path, layer_digest.as_str());
-        let response = Storage::get(&token, bucket, &object).unwrap_or_else(|e| {
+        let response = Storage::get(&token, bucket, &object, proxy).unwrap_or_else(|e| {
             status_err!("Error, unable to download object from bucket: {}", e);
             process::exit(1);
         });

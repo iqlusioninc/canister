@@ -13,6 +13,7 @@ impl Storage {
         token: &oauth::Token,
         bucket: &str,
         object: &str,
+        proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
         let url = format!(
             "https://www.googleapis.com/storage/v1/b/{}/o/{}?alt=media",
@@ -21,9 +22,13 @@ impl Storage {
         );
         debug!("{}", url);
         let headers = token.headers(AuthHeader::Bearer);
-        let storage_client = reqwest::Client::builder()
-            .default_headers(headers)
-            .build()?;
+        let storage_client = match proxy {
+            Some(p) => reqwest::Client::builder()
+                .default_headers(headers)
+                .proxy(reqwest::Proxy::all(p)?)
+                .build(),
+            None => reqwest::Client::builder().default_headers(headers).build(),
+        }?;
         let gaia_body = storage_client.get(url.as_str()).send()?;
 
         Ok(gaia_body)

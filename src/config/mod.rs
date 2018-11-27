@@ -10,6 +10,7 @@ pub struct CanisterConfig {
     pub tag: String,
     pub object: String,
     pub path: PathBuf,
+    pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
 }
 

@@ -4,6 +4,7 @@ image =  "bin"
 tag = "latest"
 object = "containers/images"
 path = "/home/app"
+proxy = "https://example.com:8080"
 
 [run_command]
 path = "/home/app/awesome-project/current/awesome-bin"
