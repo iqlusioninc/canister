@@ -53,7 +53,7 @@ impl Manifest {
         let client = match proxy {
             Some(p) => reqwest::Client::builder()
                 .default_headers(headers)
-                .proxy(reqwest::Proxy::http(p)?)
+                .proxy(reqwest::Proxy::all(p)?)
                 .build(),
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
