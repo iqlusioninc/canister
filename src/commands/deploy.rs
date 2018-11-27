@@ -57,7 +57,7 @@ impl Callable for DeployCommand {
         debug!("{:?}", &layer_digest);
 
         let object = format!("{}/sha256:{}", object_path, layer_digest.as_str());
-        let response = Storage::get(&token, bucket, &object).unwrap_or_else(|e| {
+        let response = Storage::get(&token, bucket, &object, proxy).unwrap_or_else(|e| {
             status_err!("Error, unable to download object from bucket: {}", e);
             process::exit(1);
         });

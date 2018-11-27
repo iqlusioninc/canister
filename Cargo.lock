@@ -122,7 +122,7 @@ dependencies = [
 
 [[package]]
 name = "canister"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "abscissa 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "abscissa_derive 0.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
