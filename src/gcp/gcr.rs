@@ -1,5 +1,5 @@
 use super::oauth::{self, AuthHeader};
-use error::CanisterError;
+use error::{CanisterError, CanisterErrorKind::*};
 use hex;
 use reqwest;
 use reqwest::header::{qitem, Accept};
@@ -65,7 +65,7 @@ impl Manifest {
         let docker_digest_header = response
             .headers()
             .get::<DockerContentDigest>()
-            .unwrap_or_else(|| panic!("handle missing header"))
+            .ok_or_else(|| CanisterError::from(err!(ContentDigestMissing, "{}", url)))?
             .clone();
 
         if !docker_digest_header.starts_with(SHA256_PREFIX) {
