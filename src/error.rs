@@ -22,11 +22,21 @@ pub enum CanisterErrorKind {
     /// Reqwest Error
     #[fail(display = "Reqwest error")]
     ReqwestError,
+
+    /// Content Digest missing
+    #[fail(display = "no content digest in response (access control issue?)")]
+    ContentDigestMissing,
 }
 
 impl Display for CanisterError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.0.fmt(f)
+    }
+}
+
+impl From<abscissa::Error<CanisterErrorKind>> for CanisterError {
+    fn from(err: abscissa::Error<CanisterErrorKind>) -> Self {
+        CanisterError(err)
     }
 }
 
