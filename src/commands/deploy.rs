@@ -51,7 +51,7 @@ impl Callable for DeployCommand {
         if layers_len != 1 {
             panic!("layers length more than 1");
         }
-        let layer = m.layers.get(0).unwrap();
+        let layer = &m.layers[0];
         debug!("{:?}", layer);
         let layer_digest = HexDigest::new(&layer.digest[7..]);
         debug!("{:?}", &layer_digest);
