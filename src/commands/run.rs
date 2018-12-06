@@ -1,5 +1,5 @@
-use abscissa::{Callable, GlobalConfig};
 use crate::config::CanisterConfig;
+use abscissa::{Callable, GlobalConfig};
 use std::process::Command;
 
 use super::DeployCommand;

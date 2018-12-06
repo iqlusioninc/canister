@@ -1,8 +1,8 @@
-use abscissa::{Callable, GlobalConfig};
 use crate::config::CanisterConfig;
 use crate::gcp::{Manifest, Storage, Token};
-use std::process;
 use crate::unpacker::{HexDigest, Unpacker};
+use abscissa::{Callable, GlobalConfig};
+use std::process;
 
 use std::fs;
 use std::io;
