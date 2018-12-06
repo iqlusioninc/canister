@@ -1,7 +1,7 @@
 use abscissa::GlobalConfig;
-use config::CanisterConfig;
-use error::CanisterError;
-use gcp::gcr::ImageId;
+use crate::config::CanisterConfig;
+use crate::error::CanisterError;
+use crate::gcp::gcr::ImageId;
 use hex;
 use libflate::gzip::Decoder;
 use sha2::{Digest, Sha256};

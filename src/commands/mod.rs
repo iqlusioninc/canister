@@ -9,7 +9,7 @@ mod version;
 pub use self::{
     deploy::DeployCommand, help::HelpCommand, run::RunCommand, version::VersionCommand,
 };
-use config::{CanisterConfig, CONFIG_FILE_NAME};
+use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
 #[derive(Debug, Options)]
 pub enum CanisterCommand {

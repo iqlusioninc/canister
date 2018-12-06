@@ -1,5 +1,5 @@
 use super::oauth::{self, AuthHeader};
-use error::CanisterError;
+use crate::error::CanisterError;
 use percent_encoding::{percent_encode, PATH_SEGMENT_ENCODE_SET};
 use reqwest;
 
