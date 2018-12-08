@@ -1,5 +1,5 @@
+use crate::config::CanisterConfig;
 use abscissa::{Callable, GlobalConfig};
-use config::CanisterConfig;
 use std::process::Command;
 
 use super::DeployCommand;
@@ -31,7 +31,8 @@ impl Callable for RunCommand {
         DeployCommand {
             config: self.config.clone(),
             verbose: self.verbose,
-        }.call();
+        }
+        .call();
 
         let mut run_command = Command::new(path.clone()).args(args).spawn().unwrap();
         run_command.wait().unwrap();

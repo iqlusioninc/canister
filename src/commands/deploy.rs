@@ -1,8 +1,8 @@
+use crate::config::CanisterConfig;
+use crate::gcp::{Manifest, Storage, Token};
+use crate::unpacker::{HexDigest, Unpacker};
 use abscissa::{Callable, GlobalConfig};
-use config::CanisterConfig;
-use gcp::{Manifest, Storage, Token};
 use std::process;
-use unpacker::{HexDigest, Unpacker};
 
 use std::fs;
 use std::io;
@@ -51,7 +51,7 @@ impl Callable for DeployCommand {
         if layers_len != 1 {
             panic!("layers length more than 1");
         }
-        let layer = m.layers.get(0).unwrap();
+        let layer = &m.layers[0];
         debug!("{:?}", layer);
         let layer_digest = HexDigest::new(&layer.digest[7..]);
         debug!("{:?}", &layer_digest);

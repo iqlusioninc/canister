@@ -1,5 +1,5 @@
 use super::oauth::{self, AuthHeader};
-use error::{CanisterError, CanisterErrorKind::*};
+use crate::error::{CanisterError, CanisterErrorKind::*};
 use hex;
 use reqwest;
 use reqwest::header::{qitem, Accept};

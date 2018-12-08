@@ -1,4 +1,4 @@
-use error::CanisterError;
+use crate::error::CanisterError;
 use reqwest::header::{Authorization, Basic, Bearer, Headers};
 use std::process::Command;
 

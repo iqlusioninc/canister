@@ -1,7 +1,7 @@
 use abscissa::{Application, LoggingConfig};
 
-use commands::CanisterCommand;
-use config::CanisterConfig;
+use crate::commands::CanisterCommand;
+use crate::config::CanisterConfig;
 
 #[derive(Debug)]
 pub struct CanisterApplication;
