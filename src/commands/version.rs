@@ -1,6 +1,6 @@
 //! The `version` subcommand
 //!
-#![allow(unknown_lints, clippy::never_loop)]
+#![allow(clippy::never_loop)]
 
 use super::CanisterCommand;
 use abscissa::Command as CommandTrait;
