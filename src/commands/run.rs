@@ -35,6 +35,13 @@ impl Callable for RunCommand {
         .call();
 
         let mut run_command = Command::new(path.clone()).args(args).spawn().unwrap();
-        run_command.wait().unwrap();
+        match run_command.wait() {
+            Ok(exit_status) => match exit_status.code() {
+                Some(0) => info!("successful exit status! cmd: {:?}", path),
+                Some(code) => error!("error exit status! cmd: {:?}, code: {}", path, code),
+                None => error!("Process terminated by unknown signal! cmd: {:?}", path),
+            },
+            Err(e) => error!("error: {}, cmd: {:?}", e, path),
+        }
     }
 }
