@@ -31,6 +31,7 @@ impl Callable for RunCommand {
         DeployCommand {
             config: self.config.clone(),
             verbose: self.verbose,
+            types: None,
         }
         .call();
 

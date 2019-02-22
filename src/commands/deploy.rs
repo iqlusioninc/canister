@@ -15,6 +15,14 @@ pub struct DeployCommand {
 
     #[options(short = "v", long = "verbose")]
     pub verbose: bool,
+
+    // TODO: use no_multi
+    #[options(short = "t", long = "types")]
+    pub types: Option<String>,
+}
+
+fn parse_types(types: &str) -> Result<Vec<String>, ()> {
+    Ok(types.split(",").map(|t| t.to_owned()).collect())
 }
 
 impl Default for DeployCommand {
@@ -22,6 +30,7 @@ impl Default for DeployCommand {
         Self {
             config: None,
             verbose: false,
+            types: None,
         }
     }
 }
