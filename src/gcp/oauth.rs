@@ -19,8 +19,7 @@ impl AuthHeader {
             AuthHeader::Bearer => {
                 headers.insert(
                     AUTHORIZATION,
-                    HeaderValue::from_str(&format!(
-                        "Bearer {}", token.as_str())).unwrap(),
+                    HeaderValue::from_str(&format!("Bearer {}", token.as_str())).unwrap(),
                 );
             }
             AuthHeader::Basic => {
