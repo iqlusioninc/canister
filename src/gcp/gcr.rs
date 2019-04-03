@@ -2,7 +2,7 @@ use super::oauth::{self, AuthHeader};
 use crate::error::{CanisterError, CanisterErrorKind::*};
 use hex;
 use reqwest;
-use reqwest::header::{qitem, Accept};
+use reqwest::header::ACCEPT;
 use serde_json;
 use sha2::{Digest, Sha256};
 use std::fmt;
@@ -46,9 +46,12 @@ impl Manifest {
         proxy: Option<&str>,
     ) -> Result<(ImageId, Self), CanisterError> {
         let mut headers = token.headers(AuthHeader::Basic);
-        headers.set(Accept(vec![qitem(
-            "application/vnd.docker.distribution.manifest.v2+json".parse()?,
-        )]));
+        headers.insert(
+            ACCEPT,
+            "application/vnd.docker.distribution.manifest.v2+json"
+                .parse()
+                .unwrap(),
+        );
 
         let client = match proxy {
             Some(p) => reqwest::Client::builder()
@@ -64,9 +67,11 @@ impl Manifest {
 
         let docker_digest_header = response
             .headers()
-            .get::<DockerContentDigest>()
+            .get("Docker-Content-Digest")
             .ok_or_else(|| CanisterError::from(err!(ContentDigestMissing, "{}", url)))?
-            .clone();
+            .to_str()
+            .unwrap()
+            .to_owned();
 
         if !docker_digest_header.starts_with(SHA256_PREFIX) {
             panic!("bad digest prefix: {:?}", docker_digest_header);
