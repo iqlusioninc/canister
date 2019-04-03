@@ -1,6 +1,7 @@
 use crate::error::CanisterError;
-use reqwest::header::{Authorization, Basic, Bearer, Headers};
+use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use std::process::Command;
+use subtle_encoding::base64;
 
 pub struct Token {
     pub(super) token: String,
@@ -13,15 +14,26 @@ pub enum AuthHeader {
 }
 
 impl AuthHeader {
-    pub fn set(self, headers: &mut Headers, token: &Token) {
+    pub fn set(self, headers: &mut HeaderMap, token: &Token) {
         match self {
-            AuthHeader::Bearer => headers.set(Authorization(Bearer {
-                token: token.as_str().to_owned(),
-            })),
-            AuthHeader::Basic => headers.set(Authorization(Basic {
-                username: "oauth2accesstoken".to_owned(),
-                password: Some(token.as_str().to_owned()),
-            })),
+            AuthHeader::Bearer => {
+                headers.insert(
+                    AUTHORIZATION,
+                    HeaderValue::from_str(&format!("Bearer {}", token.as_str())).unwrap(),
+                );
+            }
+            AuthHeader::Basic => {
+                let password = token.as_str();
+                let auth = format!("oauth2accesstoken:{}", password);
+                headers.insert(
+                    AUTHORIZATION,
+                    HeaderValue::from_str(&format!(
+                        "Basic {}",
+                        String::from_utf8(base64::encode(&auth)).unwrap()
+                    ))
+                    .unwrap(),
+                );
+            }
         }
     }
 }
@@ -42,8 +54,8 @@ impl Token {
         &self.token
     }
 
-    pub fn headers(&self, header_type: AuthHeader) -> Headers {
-        let mut headers = Headers::new();
+    pub fn headers(&self, header_type: AuthHeader) -> HeaderMap {
+        let mut headers = HeaderMap::new();
         header_type.set(&mut headers, self);
         headers
     }

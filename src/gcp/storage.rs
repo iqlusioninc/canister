@@ -29,8 +29,10 @@ impl Storage {
                 .build(),
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
-        let gaia_body = storage_client.get(url.as_str()).send()?;
-
-        Ok(gaia_body)
+        let response = storage_client.get(url.as_str()).send()?;
+        if !response.status().is_success() {
+            panic!("{}", response.status())
+        }
+        Ok(response)
     }
 }
