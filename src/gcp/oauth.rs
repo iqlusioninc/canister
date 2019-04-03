@@ -31,7 +31,7 @@ impl AuthHeader {
                         "Basic {}",
                         String::from_utf8(base64::encode(&auth)).unwrap()
                     ))
-                        .unwrap(),
+                    .unwrap(),
                 );
             }
         }
