@@ -20,4 +20,8 @@ pub struct RunCommandConfig {
     pub args: Vec<String>,
 }
 
+pub struct BackupCommandConfig {
+
+}
+
 impl_global_config!(CanisterConfig, GLOBAL_CONFIG);
