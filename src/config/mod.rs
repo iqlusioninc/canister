@@ -12,6 +12,7 @@ pub struct CanisterConfig {
     pub path: PathBuf,
     pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
+    pub backup_command: BackupCommandConfig,
 }
 
 #[derive(Clone, Deserialize, Debug)]
@@ -20,8 +21,10 @@ pub struct RunCommandConfig {
     pub args: Vec<String>,
 }
 
+#[derive(Clone, Deserialize, Debug)]
 pub struct BackupCommandConfig {
-
+    pub bucket: String,
+    pub path: PathBuf,
 }
 
 impl_global_config!(CanisterConfig, GLOBAL_CONFIG);
