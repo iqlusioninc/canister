@@ -4,12 +4,13 @@ use std::path::PathBuf;
 mod backup;
 mod deploy;
 mod help;
+mod restore;
 mod run;
 mod version;
 
 pub use self::{
-    backup::BackupCommand, deploy::DeployCommand, help::HelpCommand, run::RunCommand,
-    version::VersionCommand,
+    backup::BackupCommand, deploy::DeployCommand, help::HelpCommand, restore::RestoreCommand,
+    run::RunCommand, version::VersionCommand,
 };
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
@@ -23,6 +24,9 @@ pub enum CanisterCommand {
 
     #[options(help = "show help for a command")]
     Help(HelpCommand),
+
+    #[options(help = "restore the backup")]
+    Restore(RestoreCommand),
 
     #[options(help = "run the application")]
     Run(RunCommand),
@@ -38,6 +42,7 @@ impl CanisterCommand {
         match self {
             CanisterCommand::Backup(backup) => backup.verbose,
             CanisterCommand::Deploy(deploy) => deploy.verbose,
+            CanisterCommand::Restore(restore) => restore.verbose,
             CanisterCommand::Run(run) => run.verbose,
             _ => false,
         }
@@ -61,6 +66,13 @@ impl LoadConfig<CanisterConfig> for CanisterCommand {
                     .map(AsRef::as_ref)
                     .unwrap_or(CONFIG_FILE_NAME),
             )),
+            CanisterCommand::Restore(restore) => Some(PathBuf::from(
+                restore
+                    .config
+                    .as_ref()
+                    .map(AsRef::as_ref)
+                    .unwrap_or(CONFIG_FILE_NAME),
+            )),
             CanisterCommand::Run(run) => Some(PathBuf::from(
                 run.config
                     .as_ref()
@@ -78,6 +90,7 @@ impl Callable for CanisterCommand {
             CanisterCommand::Backup(backup) => backup.call(),
             CanisterCommand::Deploy(deploy) => deploy.call(),
             CanisterCommand::Help(help) => help.call(),
+            CanisterCommand::Restore(restore) => restore.call(),
             CanisterCommand::Run(run) => run.call(),
             CanisterCommand::Version(version) => version.call(),
         }

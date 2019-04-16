@@ -13,18 +13,24 @@ pub struct CanisterConfig {
     pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
     pub backup_command: BackupCommandConfig,
+    pub restore_command: RestoreCommandConfig,
+}
+
+#[derive(Clone, Deserialize, Debug)]
+pub struct BackupCommandConfig {
+    pub bucket: String,
+}
+
+#[derive(Clone, Deserialize, Debug)]
+pub struct RestoreCommandConfig {
+    pub bucket: String,
+    pub path: PathBuf,
 }
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct RunCommandConfig {
     pub path: PathBuf,
     pub args: Vec<String>,
-}
-
-#[derive(Clone, Deserialize, Debug)]
-pub struct BackupCommandConfig {
-    pub bucket: String,
-    pub path: PathBuf,
 }
 
 impl_global_config!(CanisterConfig, GLOBAL_CONFIG);
