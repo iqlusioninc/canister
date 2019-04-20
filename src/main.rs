@@ -18,6 +18,7 @@ mod commands;
 mod config;
 mod error;
 mod gcp;
+mod packer;
 mod unpacker;
 
 use crate::application::CanisterApplication;

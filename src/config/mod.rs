@@ -12,19 +12,14 @@ pub struct CanisterConfig {
     pub path: PathBuf,
     pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
-    pub backup_command: BackupCommandConfig,
-    pub restore_command: RestoreCommandConfig,
+    pub snapshot: SnapshotConfig,
 }
 
 #[derive(Clone, Deserialize, Debug)]
-pub struct BackupCommandConfig {
-    pub bucket: String,
-}
-
-#[derive(Clone, Deserialize, Debug)]
-pub struct RestoreCommandConfig {
+pub struct SnapshotConfig {
     pub bucket: String,
     pub path: PathBuf,
+    pub tar_file: PathBuf,
 }
 
 #[derive(Clone, Deserialize, Debug)]

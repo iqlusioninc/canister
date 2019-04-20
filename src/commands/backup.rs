@@ -1,6 +1,8 @@
 use crate::config::CanisterConfig;
 use crate::gcp::{Storage, Token};
+use crate::packer::Packer;
 use abscissa::{Callable, GlobalConfig};
+use std::fs::File;
 use std::process;
 
 #[derive(Debug, Options)]
@@ -24,11 +26,24 @@ impl Default for BackupCommand {
 impl Callable for BackupCommand {
     fn call(&self) {
         let config = CanisterConfig::get_global();
-        let bucket = &config.backup_command.bucket;
+        let bucket = &config.snapshot.bucket;
         let proxy = config.proxy.as_ref().map(String::as_str);
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
         });
+
+        // create tar file
+        let tar_path = &config.snapshot.tar_file;
+        let tar_file = File::create(tar_path).unwrap();
+
+        // pack up dir to snapshot
+        let mut packer = Packer::new(tar_file);
+        packer.pack().unwrap_or_else(|e| {
+            status_err!("Error, uneable to pack archive: {}", e);
+            process::exit(1);
+        });
+
+        // upload snapshot obj to bucket
     }
 }

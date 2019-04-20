@@ -16,7 +16,7 @@ use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
 #[derive(Debug, Options)]
 pub enum CanisterCommand {
-    #[options(help = "backup the application")]
+    #[options(help = "backup the application snapshot")]
     Backup(BackupCommand),
 
     #[options(help = "deploy the application")]
@@ -25,7 +25,7 @@ pub enum CanisterCommand {
     #[options(help = "show help for a command")]
     Help(HelpCommand),
 
-    #[options(help = "restore the backup")]
+    #[options(help = "restore the snapshot")]
     Restore(RestoreCommand),
 
     #[options(help = "run the application")]

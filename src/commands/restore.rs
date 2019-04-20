@@ -24,7 +24,7 @@ impl Default for RestoreCommand {
 impl Callable for RestoreCommand {
     fn call(&self) {
         let config = CanisterConfig::get_global();
-        let bucket = &config.restore_command.bucket;
+        let bucket = &config.snapshot.bucket;
         let proxy = config.proxy.as_ref().map(String::as_str);
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
