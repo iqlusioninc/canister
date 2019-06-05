@@ -1,6 +1,5 @@
-use crate::config::CanisterConfig;
-use abscissa::{Callable, GlobalConfig};
-use std::process::Command;
+use crate::prelude::*;
+use abscissa::Runnable;
 
 use super::DeployCommand;
 
@@ -22,9 +21,9 @@ impl Default for RunCommand {
     }
 }
 
-impl Callable for RunCommand {
-    fn call(&self) {
-        let config = CanisterConfig::get_global();
+impl Runnable for RunCommand {
+    fn run(&self) {
+        let config = app_config();
         let path = &config.run_command.path;
         let args = &config.run_command.args;
 
@@ -32,9 +31,12 @@ impl Callable for RunCommand {
             config: self.config.clone(),
             verbose: self.verbose,
         }
-        .call();
+        .run();
 
-        let mut run_command = Command::new(path.clone()).args(args).spawn().unwrap();
+        let mut run_command = std::process::Command::new(path.clone())
+            .args(args)
+            .spawn()
+            .unwrap();
         match run_command.wait() {
             Ok(exit_status) => match exit_status.code() {
                 Some(0) => info!("successful exit status! cmd: {:?}", path),

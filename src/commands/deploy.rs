@@ -1,7 +1,7 @@
-use crate::config::CanisterConfig;
 use crate::gcp::{Manifest, Storage, Token};
+use crate::prelude::*;
 use crate::unpacker::{HexDigest, Unpacker};
-use abscissa::{Callable, GlobalConfig};
+use abscissa::Runnable;
 use std::process;
 
 use std::fs;
@@ -26,9 +26,9 @@ impl Default for DeployCommand {
     }
 }
 
-impl Callable for DeployCommand {
-    fn call(&self) {
-        let config = CanisterConfig::get_global();
+impl Runnable for DeployCommand {
+    fn run(&self) {
+        let config = app_config();
         let project = &config.project;
         let bucket = &config.bucket;
         let image = &config.image;

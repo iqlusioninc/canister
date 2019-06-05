@@ -1,4 +1,4 @@
-use abscissa::Command;
+use abscissa::{Command, Runnable};
 
 use super::CanisterCommand;
 
@@ -8,9 +8,16 @@ pub struct HelpCommand {
     #[options(free)]
     pub args: Vec<String>,
 }
-impl HelpCommand {
+impl Runnable for HelpCommand {
     /// Print help message
-    pub fn call(&self) -> ! {
-        CanisterCommand::print_usage(self.args.as_slice())
+    fn run(&self) {
+        CanisterCommand::print_usage(
+            &self
+                .args
+                .as_slice()
+                .iter()
+                .map(|arg| arg.as_ref())
+                .collect::<Vec<_>>(),
+        );
     }
 }
