@@ -8,9 +8,10 @@ use abscissa::Command as CommandTrait;
 /// The `version` subcommand
 #[derive(Debug, Default, Options)]
 pub struct VersionCommand {}
+
 impl VersionCommand {
     /// Print version message
-    pub fn call(&self) {
+    pub fn run(&self) {
         CanisterCommand::print_package_info();
     }
 }

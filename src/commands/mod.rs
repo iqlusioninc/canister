@@ -1,4 +1,4 @@
-use abscissa::{Callable, LoadConfig};
+use abscissa::{Command, Configurable, Options, Runnable};
 use std::path::PathBuf;
 
 mod deploy;
@@ -11,7 +11,7 @@ pub use self::{
 };
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
-#[derive(Debug, Options)]
+#[derive(Command, Debug, Options, Runnable)]
 pub enum CanisterCommand {
     #[options(help = "deploy the application")]
     Deploy(DeployCommand),
@@ -26,8 +26,6 @@ pub enum CanisterCommand {
     Version(VersionCommand),
 }
 
-impl_command!(CanisterCommand);
-
 impl CanisterCommand {
     pub fn verbose(&self) -> bool {
         match self {
@@ -38,7 +36,7 @@ impl CanisterCommand {
     }
 }
 
-impl LoadConfig<CanisterConfig> for CanisterCommand {
+impl Configurable<CanisterConfig> for CanisterCommand {
     fn config_path(&self) -> Option<PathBuf> {
         match self {
             CanisterCommand::Deploy(deploy) => Some(PathBuf::from(
@@ -55,17 +53,6 @@ impl LoadConfig<CanisterConfig> for CanisterCommand {
                     .unwrap_or(CONFIG_FILE_NAME),
             )),
             _ => None,
-        }
-    }
-}
-
-impl Callable for CanisterCommand {
-    fn call(&self) {
-        match self {
-            CanisterCommand::Deploy(deploy) => deploy.call(),
-            CanisterCommand::Help(help) => help.call(),
-            CanisterCommand::Run(run) => run.call(),
-            CanisterCommand::Version(version) => version.call(),
         }
     }
 }

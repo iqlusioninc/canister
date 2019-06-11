@@ -1,27 +1,23 @@
 #[macro_use]
 extern crate abscissa;
 #[macro_use]
-extern crate abscissa_derive;
-#[macro_use]
 extern crate failure_derive;
 #[macro_use]
 extern crate hyper;
-#[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
-#[macro_use]
-extern crate serde_derive;
 
-mod application;
-mod commands;
-mod config;
-mod error;
-mod gcp;
-mod unpacker;
+pub mod application;
+pub mod commands;
+pub mod config;
+pub mod error;
+pub mod gcp;
+pub mod prelude;
+pub mod unpacker;
 
-use crate::application::CanisterApplication;
+use crate::application::APPLICATION;
 
 fn main() {
-    abscissa::boot(CanisterApplication);
+    abscissa::boot(&APPLICATION);
 }
