@@ -1,4 +1,4 @@
-# canister 🛢️ <a href="https://www.iqlusion.io"><img src="https://storage.googleapis.com/iqlusion-prod-web-assets/img/logo/iqlusion-rings-sm.png" alt="iqlusion" width="32" height="32"></a>
+# canister 🛢️ <a href="https://www.iqlusion.io"><img src="https://storage.googleapis.com/iqlusion-production-web/img/logo/iqlusion-rings-sm.png" alt="iqlusion" width="32" height="32"></a>
 
 Deploy self-contained binaries from [GCP Container Registry] (gcr.io) as systemd service units.
 
