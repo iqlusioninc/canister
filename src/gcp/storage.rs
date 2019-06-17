@@ -35,4 +35,27 @@ impl Storage {
         }
         Ok(response)
     }
+
+    // https://cloud.google.com/storage/docs/json_api/v1/objects/list
+    pub fn list(
+        token: &oauth::Token,
+        bucket: &str,
+        proxy: Option<&str>,
+    ) -> Result<reqwest::Response, CanisterError> {
+        let url = format!("https://www.googleapis.com/storage/v1/b/{}/o", bucket,);
+        debug!("{}", url);
+        let headers = token.headers(AuthHeader::Bearer);
+        let storage_client = match proxy {
+            Some(p) => reqwest::Client::builder()
+                .default_headers(headers)
+                .proxy(reqwest::Proxy::all(p)?)
+                .build(),
+            None => reqwest::Client::builder().default_headers(headers).build(),
+        }?;
+        let response = storage_client.get(url.as_str()).send()?;
+        if !response.status().is_success() {
+            panic!("{}", response.status())
+        }
+        Ok(response)
+    }
 }

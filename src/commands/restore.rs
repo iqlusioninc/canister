@@ -1,4 +1,4 @@
-use crate::gcp::Token;
+use crate::gcp::{Storage, Token};
 use crate::prelude::*;
 use abscissa::{Command, Runnable};
 use std::process;
@@ -24,18 +24,18 @@ impl Default for RestoreCommand {
 impl Runnable for RestoreCommand {
     fn run(&self) {
         let config = app_config();
-        let _bucket = &config.snapshot.bucket;
-        let _proxy = config.proxy.as_ref().map(String::as_str);
-        let _token = Token::from_gcloud_tool().unwrap_or_else(|e| {
+        let bucket = &config.snapshot.bucket;
+        let proxy = config.proxy.as_ref().map(String::as_str);
+        let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
         });
 
-        //let response = Storage::list(&token, bucket, proxy).unwrap_or_else(|e| {
-        //    status_err!("Error, unable to list objects from bucket: {}", e);
-        //    process::exit(1);
-        //});
+        let response = Storage::list(&token, bucket, proxy).unwrap_or_else(|e| {
+            status_err!("Error, unable to list objects from bucket: {}", e);
+            process::exit(1);
+        });
 
-        //debug!("response: {:?}", response)
+        debug!("response: {:?}", response)
     }
 }
