@@ -13,6 +13,7 @@ pub mod commands;
 pub mod config;
 pub mod error;
 pub mod gcp;
+pub mod packer;
 pub mod prelude;
 pub mod unpacker;
 

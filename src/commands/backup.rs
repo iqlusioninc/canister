@@ -1,11 +1,11 @@
-use crate::gcp::{Storage, Token};
+use crate::gcp::Token;
 use crate::packer::Packer;
 use crate::prelude::*;
-use abscissa::Runnable;
+use abscissa::{Command, Runnable};
 use std::fs::File;
 use std::process;
 
-#[derive(Debug, Options)]
+#[derive(Command, Debug, Options)]
 pub struct BackupCommand {
     #[options(short = "c", long = "config")]
     pub config: Option<String>,
@@ -24,11 +24,11 @@ impl Default for BackupCommand {
 }
 
 impl Runnable for BackupCommand {
-    fn call(&self) {
+    fn run(&self) {
         let config = app_config();
-        let bucket = &config.snapshot.bucket;
-        let proxy = config.proxy.as_ref().map(String::as_str);
-        let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
+        let _bucket = &config.snapshot.bucket;
+        let _proxy = config.proxy.as_ref().map(String::as_str);
+        let _token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
         });

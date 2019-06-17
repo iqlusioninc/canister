@@ -14,7 +14,7 @@ pub struct CanisterConfig {
     pub path: PathBuf,
     pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
-    pub snapshot: Option<SnapshotConfig>,
+    pub snapshot: SnapshotConfig,
 }
 
 #[derive(Config, Default, Deserialize, Debug)]
