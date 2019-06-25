@@ -1,4 +1,4 @@
-use crate::gcp::Token;
+use crate::gcp::{Storage, Token};
 use crate::packer::Packer;
 use crate::prelude::*;
 use abscissa::{Command, Runnable};
@@ -26,9 +26,9 @@ impl Default for BackupCommand {
 impl Runnable for BackupCommand {
     fn run(&self) {
         let config = app_config();
-        let _bucket = &config.snapshot.bucket;
-        let _proxy = config.proxy.as_ref().map(String::as_str);
-        let _token = Token::from_gcloud_tool().unwrap_or_else(|e| {
+        let bucket = &config.snapshot.bucket;
+        let proxy = config.proxy.as_ref().map(String::as_str);
+        let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
         });
@@ -45,5 +45,11 @@ impl Runnable for BackupCommand {
         });
 
         // upload snapshot obj to bucket
+        let snapshot = File::open(&tar_path).unwrap();
+        let response = Storage::insert(&token, bucket, snapshot, proxy).unwrap_or_else(|e| {
+            status_err!("Error, unable to upload object to bucket: {}", e);
+            process::exit(1);
+        });
+        dbg!(&response);
     }
 }

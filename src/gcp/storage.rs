@@ -1,7 +1,8 @@
 use super::oauth::{self, AuthHeader};
 use crate::error::CanisterError;
 use percent_encoding::{percent_encode, PATH_SEGMENT_ENCODE_SET};
-use reqwest;
+use reqwest::header::{HeaderValue, CONTENT_TYPE};
+use std::fs::File;
 
 pub struct Storage {
     pub bucket: String,
@@ -64,15 +65,23 @@ impl Storage {
     pub fn insert(
         token: &oauth::Token,
         bucket: &str,
+        object: File,
         proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
         let url = format!(
-            "https://www.googleapis.com/upload/storage/v1/b/{}/o",
-            bucket
+            "https://www.googleapis.com/upload/storage/v1/b/{}/o?uploadType=media&name={}",
+            bucket,
+            // todo(shella) - automate object name
+            "test-2019-06-25.tgz",
         );
-        debug!("{}", url);
-        let headers = token.headers(AuthHeader::Bearer);
-        // todo(shella) - add Content-Length and Content-Type to headers
+        dbg!(&url);
+        let mut headers = token.headers(AuthHeader::Bearer);
+        headers.insert(
+            CONTENT_TYPE,
+            HeaderValue::from_static("application/octet-stream"),
+        );
+        dbg!(&headers);
+
         let storage_client = match proxy {
             Some(p) => reqwest::Client::builder()
                 .default_headers(headers)
@@ -81,13 +90,8 @@ impl Storage {
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
 
-        // POST https://www.googleapis.com/upload/storage/v1/b/bucket/o
-        let response = storage_client.post(url.as_str()).send()?;
-        //let response = storage_client
-        //    .post(url.as_str())
-        //    .body(snapshot)
-        //    .send()?;
-        debug!("{:?}", response);
+        let response = storage_client.post(url.as_str()).body(object).send()?;
+        dbg!(&response);
         if !response.status().is_success() {
             panic!("{}", response.status())
         }
