@@ -19,12 +19,22 @@ impl<W: Write> Packer<W> {
     }
 
     pub fn pack(&mut self) -> Result<(), CanisterError> {
-        let encoder = Encoder::new(&mut self.writer).unwrap();
-        let mut archive = tar::Builder::new(encoder);
-        for f in WalkDir::new(&self.path) {
-            let f = f.unwrap();
-            archive.append_path(f.path()).unwrap();
+        let mut encoder = Encoder::new(&mut self.writer).unwrap();
+        {
+            let mut archive = tar::Builder::new(&mut encoder);
+            for f in WalkDir::new(&self.path) {
+                let f = f.unwrap();
+                if f.path().is_dir() {
+                    continue;
+                }
+                dbg!(&f);
+                archive
+                    .append_path_with_name(f.path(), f.path().strip_prefix(&self.path).unwrap())
+                    .unwrap();
+            }
+            archive.finish().unwrap();
         }
+        encoder.finish().unwrap();
         Ok(())
     }
 }
