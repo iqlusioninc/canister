@@ -1,8 +1,8 @@
 //! Canister Abscissa Application
 
 use crate::{commands::CanisterCommand, config::CanisterConfig};
-use abscissa::{application, config};
-use abscissa::{Application, EntryPoint, FrameworkError, LoggingConfig, StandardPaths};
+use abscissa::{application, config, logging};
+use abscissa::{Application, EntryPoint, FrameworkError, StandardPaths};
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -103,11 +103,11 @@ impl Application for CanisterApplication {
     }
 
     /// Get logging configuration from command-line options
-    fn logging_config(&self, command: &EntryPoint<CanisterCommand>) -> LoggingConfig {
+    fn logging_config(&self, command: &EntryPoint<CanisterCommand>) -> logging::Config {
         if command.verbose {
-            LoggingConfig::verbose()
+            logging::Config::verbose()
         } else {
-            LoggingConfig::default()
+            logging::Config::default()
         }
     }
 }

@@ -1,9 +1,9 @@
 use crate::prelude::*;
-use abscissa::Runnable;
+use abscissa::{Command, Runnable};
 
 use super::DeployCommand;
 
-#[derive(Debug, Options)]
+#[derive(Command, Debug, Options)]
 pub struct RunCommand {
     #[options(short = "c", long = "config")]
     pub config: Option<String>,

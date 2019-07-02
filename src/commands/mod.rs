@@ -1,14 +1,11 @@
-use abscissa::{Command, Configurable, Options, Runnable};
+use abscissa::{Command, Configurable, Help, Options, Runnable};
 use std::path::PathBuf;
 
 mod deploy;
-mod help;
 mod run;
 mod version;
 
-pub use self::{
-    deploy::DeployCommand, help::HelpCommand, run::RunCommand, version::VersionCommand,
-};
+pub use self::{deploy::DeployCommand, run::RunCommand, version::VersionCommand};
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
 #[derive(Command, Debug, Options, Runnable)]
@@ -17,7 +14,7 @@ pub enum CanisterCommand {
     Deploy(DeployCommand),
 
     #[options(help = "show help for a command")]
-    Help(HelpCommand),
+    Help(Help<Self>),
 
     #[options(help = "run the application")]
     Run(RunCommand),

@@ -1,14 +1,14 @@
 use crate::gcp::{Manifest, Storage, Token};
 use crate::prelude::*;
 use crate::unpacker::{HexDigest, Unpacker};
-use abscissa::Runnable;
+use abscissa::{Command, Runnable};
 use std::process;
 
 use std::fs;
 use std::io;
 use std::os::unix;
 
-#[derive(Debug, Options)]
+#[derive(Command, Debug, Options)]
 pub struct DeployCommand {
     #[options(short = "c", long = "config")]
     pub config: Option<String>,
