@@ -23,7 +23,7 @@ pub struct RunCommandConfig {
     pub args: Vec<String>,
 }
 
-#[derive(Config, Deserialize, Debug)]
+#[derive(Config, Default, Deserialize, Debug)]
 pub struct SnapshotConfig {
     pub bucket: String,
     pub path: PathBuf,

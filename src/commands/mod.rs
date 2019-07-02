@@ -8,8 +8,8 @@ mod run;
 mod version;
 
 pub use self::{
-    backup::BackupCommand, deploy::DeployCommand, restore::RestoreCommand,
-    run::RunCommand, version::VersionCommand,
+    backup::BackupCommand, deploy::DeployCommand, restore::RestoreCommand, run::RunCommand,
+    version::VersionCommand,
 };
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 

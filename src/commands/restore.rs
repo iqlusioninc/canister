@@ -1,6 +1,6 @@
 use crate::gcp::{Storage, Token};
 use crate::prelude::*;
-use abscissa::{Command, Runnable};
+use abscissa_core::{Command, Runnable};
 use std::process;
 
 #[derive(Command, Debug, Options)]
