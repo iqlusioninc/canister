@@ -3,15 +3,15 @@
 #![allow(clippy::never_loop)]
 
 use super::CanisterCommand;
-use abscissa::Command as CommandTrait;
+use abscissa::{Command, Runnable};
 
 /// The `version` subcommand
-#[derive(Debug, Default, Options)]
+#[derive(Command, Debug, Default, Options)]
 pub struct VersionCommand {}
 
-impl VersionCommand {
+impl Runnable for VersionCommand {
     /// Print version message
-    pub fn run(&self) {
-        CanisterCommand::print_package_info();
+    fn run(&self) {
+        println!("{} {}", CanisterCommand::name(), CanisterCommand::version());
     }
 }
