@@ -33,7 +33,7 @@ buildflags = ["--release"]
 [package.metadata.rpm.targets]
 canister = { path = "/usr/bin/canister" }
 
-[dependencies.abscissa]
-version = "0.1.0"
+[dependencies.abscissa_core]
+version = "0.2.0-rc.1"
 default-features = false
 features = ["application", "signals", "secrets", "time"]

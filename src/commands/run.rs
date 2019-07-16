@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use abscissa::{Command, Runnable};
+use abscissa_core::{Command, Runnable};
 
 use super::DeployCommand;
 

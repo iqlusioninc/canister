@@ -1,5 +1,5 @@
 #[macro_use]
-extern crate abscissa;
+extern crate abscissa_core;
 #[macro_use]
 extern crate failure_derive;
 #[macro_use]
@@ -19,5 +19,5 @@ pub mod unpacker;
 use crate::application::APPLICATION;
 
 fn main() {
-    abscissa::boot(&APPLICATION);
+    abscissa_core::boot(&APPLICATION);
 }

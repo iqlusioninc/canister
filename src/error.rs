@@ -1,4 +1,4 @@
-use abscissa::Error;
+use abscissa_core::Error;
 use hyper;
 use reqwest;
 use serde_json;
@@ -34,8 +34,8 @@ impl Display for CanisterError {
     }
 }
 
-impl From<abscissa::Error<CanisterErrorKind>> for CanisterError {
-    fn from(err: abscissa::Error<CanisterErrorKind>) -> Self {
+impl From<abscissa_core::Error<CanisterErrorKind>> for CanisterError {
+    fn from(err: abscissa_core::Error<CanisterErrorKind>) -> Self {
         CanisterError(err)
     }
 }

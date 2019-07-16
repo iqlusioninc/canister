@@ -1,10 +1,10 @@
-use abscissa::Config;
+use abscissa_core::Config;
 use serde::Deserialize;
 use std::path::PathBuf;
 
 pub const CONFIG_FILE_NAME: &str = "canister.toml";
 
-#[derive(Config, Deserialize, Debug)]
+#[derive(Config, Default, Deserialize, Debug)]
 pub struct CanisterConfig {
     pub project: String,
     pub bucket: String,
@@ -16,7 +16,7 @@ pub struct CanisterConfig {
     pub run_command: RunCommandConfig,
 }
 
-#[derive(Config, Deserialize, Debug)]
+#[derive(Config, Default, Deserialize, Debug)]
 pub struct RunCommandConfig {
     pub path: PathBuf,
     pub args: Vec<String>,

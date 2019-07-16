@@ -1,8 +1,8 @@
 //! Canister Abscissa Application
 
 use crate::{commands::CanisterCommand, config::CanisterConfig};
-use abscissa::{application, config, logging};
-use abscissa::{Application, EntryPoint, FrameworkError, StandardPaths};
+use abscissa_core::{application, config, logging};
+use abscissa_core::{Application, EntryPoint, FrameworkError, StandardPaths};
 use lazy_static::lazy_static;
 
 lazy_static! {
@@ -63,8 +63,8 @@ impl Application for CanisterApplication {
     type Paths = StandardPaths;
 
     /// Accessor for application configuration.
-    fn config(&self) -> Option<&CanisterConfig> {
-        self.config.as_ref()
+    fn config(&self) -> &CanisterConfig {
+        self.config.as_ref().expect("not configured yet")
     }
 
     /// Borrow the application state immutably.
@@ -92,13 +92,10 @@ impl Application for CanisterApplication {
     /// Called regardless of whether config is loaded to indicate this is the
     /// time in app lifecycle when configuration would be loaded if
     /// possible.
-    fn after_config(&mut self, config: Option<Self::Cfg>) -> Result<(), FrameworkError> {
-        // Provide configuration to all component `after_config()` handlers
-        for component in self.state.components.iter_mut() {
-            component.after_config(config.as_ref())?;
-        }
+    fn after_config(&mut self, config: Self::Cfg) -> Result<(), FrameworkError> {
+        self.state.components.after_config(&config)?;
+        self.config = Some(config);
 
-        self.config = config;
         Ok(())
     }
 
