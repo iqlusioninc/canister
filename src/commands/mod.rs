@@ -1,4 +1,4 @@
-use abscissa::{Command, Configurable, Help, Options, Runnable};
+use abscissa_core::{Command, Configurable, Help, Options, Runnable};
 use std::path::PathBuf;
 
 mod deploy;
