@@ -34,6 +34,6 @@ buildflags = ["--release"]
 canister = { path = "/usr/bin/canister" }
 
 [dependencies.abscissa_core]
-version = "0.2.0-rc.1"
+version = "0.2.0"
 default-features = false
 features = ["application", "signals", "secrets", "time"]
