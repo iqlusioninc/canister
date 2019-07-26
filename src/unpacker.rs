@@ -14,7 +14,10 @@ pub struct Unpacker<R: Read> {
 impl<R: Read> Unpacker<R> {
     pub fn new(reader: R, path: impl Into<PathBuf>) -> Self {
         let hasher = Hasher::new(reader);
-        Self { hasher, path: path.into() }
+        Self {
+            hasher,
+            path: path.into(),
+        }
     }
 
     pub fn unpack(&mut self) -> Result<(), CanisterError> {

@@ -71,8 +71,7 @@ impl Storage {
     ) -> Result<reqwest::Response, CanisterError> {
         let url = format!(
             "https://www.googleapis.com/upload/storage/v1/b/{}/o?uploadType=media&name={}",
-            bucket,
-            name,
+            bucket, name,
         );
         dbg!(&url);
         let mut headers = token.headers(AuthHeader::Bearer);
