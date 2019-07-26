@@ -14,7 +14,7 @@ pub struct CanisterConfig {
     pub path: PathBuf,
     pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
-    pub snapshot: SnapshotConfig,
+    pub backup: BackupConfig,
 }
 
 #[derive(Config, Default, Deserialize, Debug)]
@@ -24,8 +24,8 @@ pub struct RunCommandConfig {
 }
 
 #[derive(Config, Default, Deserialize, Debug)]
-pub struct SnapshotConfig {
+pub struct BackupConfig {
     pub bucket: String,
     pub path: PathBuf,
-    pub tar_file: PathBuf,
+    pub name: String,
 }

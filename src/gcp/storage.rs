@@ -66,13 +66,13 @@ impl Storage {
         token: &oauth::Token,
         bucket: &str,
         object: File,
+        name: &str,
         proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
         let url = format!(
             "https://www.googleapis.com/upload/storage/v1/b/{}/o?uploadType=media&name={}",
             bucket,
-            // todo(shella) - automate object name
-            "test-2019-06-25.tgz",
+            name,
         );
         dbg!(&url);
         let mut headers = token.headers(AuthHeader::Bearer);

@@ -26,7 +26,7 @@ impl Default for BackupCommand {
 impl Runnable for BackupCommand {
     fn run(&self) {
         let config = app_config();
-        let bucket = &config.snapshot.bucket;
+        let bucket = &config.backup.bucket;
         let proxy = config.proxy.as_ref().map(String::as_str);
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
@@ -34,19 +34,22 @@ impl Runnable for BackupCommand {
         });
 
         // create tar file
-        let tar_path = &config.snapshot.tar_file;
-        let tar_file = File::create(tar_path).unwrap();
+        let path = &config.backup.path;
+        let name = &config.backup.name;
+        let tar = path.join(name);
+        dbg!(&tar);
+        let tar_file = File::create(&tar).unwrap();
 
-        // pack up dir to snapshot
+        // pack up dir
         let mut packer = Packer::new(tar_file);
         packer.pack().unwrap_or_else(|e| {
             status_err!("Error, uneable to pack archive: {}", e);
             process::exit(1);
         });
 
-        // upload snapshot obj to bucket
-        let snapshot = File::open(&tar_path).unwrap();
-        let response = Storage::insert(&token, bucket, snapshot, proxy).unwrap_or_else(|e| {
+        // upload obj to bucket
+        let backup = File::open(&tar).unwrap();
+        let response = Storage::insert(&token, bucket, backup, name, proxy).unwrap_or_else(|e| {
             status_err!("Error, unable to upload object to bucket: {}", e);
             process::exit(1);
         });

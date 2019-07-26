@@ -61,7 +61,7 @@ impl Runnable for DeployCommand {
             status_err!("Error, unable to download object from bucket: {}", e);
             process::exit(1);
         });
-        let mut unpacker = Unpacker::new(response, &image_id);
+        let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
         unpacker.unpack().unwrap_or_else(|e| {
             status_err!("Error, unable to unpack archive: {}", e);
             process::exit(1);
