@@ -2,6 +2,7 @@ use super::oauth::{self, AuthHeader};
 use crate::error::CanisterError;
 use percent_encoding::{percent_encode, PATH_SEGMENT_ENCODE_SET};
 use reqwest::header::{HeaderValue, CONTENT_TYPE};
+use reqwest::Url;
 use std::fs::File;
 
 pub struct Storage {
@@ -10,18 +11,20 @@ pub struct Storage {
 }
 
 impl Storage {
+    // https://cloud.google.com/storage/docs/json_api/v1/objects/get
     pub fn get(
         token: &oauth::Token,
         bucket: &str,
         object: &str,
         proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
-        let url = format!(
-            "https://www.googleapis.com/storage/v1/b/{}/o/{}?alt=media",
-            bucket,
-            percent_encode(object.as_bytes(), PATH_SEGMENT_ENCODE_SET).to_string()
-        );
-        debug!("{}", url);
+        let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
+        let mut url = base
+            .join(&format!("{}/", bucket))?
+            .join("o/")?
+            .join(&percent_encode(object.as_bytes(), PATH_SEGMENT_ENCODE_SET).to_string())?;
+        url.set_query(Some("alt=media"));
+        dbg!(&url);
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
             Some(p) => reqwest::Client::builder()
@@ -37,14 +40,15 @@ impl Storage {
         Ok(response)
     }
 
-    // WIP https://cloud.google.com/storage/docs/json_api/v1/objects/list
+    // https://cloud.google.com/storage/docs/json_api/v1/objects/list
     pub fn list(
         token: &oauth::Token,
         bucket: &str,
         proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
-        let url = format!("https://www.googleapis.com/storage/v1/b/{}/o", bucket);
-        debug!("{}", url);
+        let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
+        let url = base.join(&format!("{}/", bucket))?.join("o/")?;
+        dbg!(&url);
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
             Some(p) => reqwest::Client::builder()
@@ -54,14 +58,14 @@ impl Storage {
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
         let response = storage_client.get(url.as_str()).send()?;
-        debug!("{:?}", response);
+        dbg!(&response);
         if !response.status().is_success() {
             panic!("{}", response.status())
         }
         Ok(response)
     }
 
-    // WIP https://cloud.google.com/storage/docs/json_api/v1/objects/insert
+    // https://cloud.google.com/storage/docs/json_api/v1/objects/insert
     pub fn insert(
         token: &oauth::Token,
         bucket: &str,
@@ -69,11 +73,11 @@ impl Storage {
         name: &str,
         proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
-        let url = format!(
-            "https://www.googleapis.com/upload/storage/v1/b/{}/o?uploadType=media&name={}",
-            bucket, name,
-        );
+        let base = Url::parse("https://www.googleapis.com/upload/storage/v1/b/")?;
+        let mut url = base.join(&format!("{}/", bucket))?.join("o")?;
+        url.set_query(Some(&format!("uploadType=media&name={}", name)));
         dbg!(&url);
+
         let mut headers = token.headers(AuthHeader::Bearer);
         headers.insert(
             CONTENT_TYPE,
