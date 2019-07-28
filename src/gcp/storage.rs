@@ -24,7 +24,6 @@ impl Storage {
             .join("o/")?
             .join(&percent_encode(object.as_bytes(), PATH_SEGMENT_ENCODE_SET).to_string())?;
         url.set_query(Some("alt=media"));
-        dbg!(&url);
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
             Some(p) => reqwest::Client::builder()
@@ -48,7 +47,6 @@ impl Storage {
     ) -> Result<reqwest::Response, CanisterError> {
         let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
         let url = base.join(&format!("{}/", bucket))?.join("o/")?;
-        dbg!(&url);
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
             Some(p) => reqwest::Client::builder()
@@ -58,7 +56,6 @@ impl Storage {
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
         let response = storage_client.get(url.as_str()).send()?;
-        dbg!(&response);
         if !response.status().is_success() {
             panic!("{}", response.status())
         }
@@ -76,14 +73,12 @@ impl Storage {
         let base = Url::parse("https://www.googleapis.com/upload/storage/v1/b/")?;
         let mut url = base.join(&format!("{}/", bucket))?.join("o")?;
         url.set_query(Some(&format!("uploadType=media&name={}", name)));
-        dbg!(&url);
 
         let mut headers = token.headers(AuthHeader::Bearer);
         headers.insert(
             CONTENT_TYPE,
             HeaderValue::from_static("application/octet-stream"),
         );
-        dbg!(&headers);
 
         let storage_client = match proxy {
             Some(p) => reqwest::Client::builder()
@@ -94,7 +89,6 @@ impl Storage {
         }?;
 
         let response = storage_client.post(url.as_str()).body(object).send()?;
-        dbg!(&response);
         if !response.status().is_success() {
             panic!("{}", response.status())
         }

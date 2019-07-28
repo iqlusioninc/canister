@@ -27,7 +27,6 @@ impl<W: Write> Packer<W> {
                 if f.path().is_dir() {
                     continue;
                 }
-                dbg!(&f);
                 archive
                     .append_path_with_name(f.path(), f.path().strip_prefix(&self.path).unwrap())
                     .unwrap();

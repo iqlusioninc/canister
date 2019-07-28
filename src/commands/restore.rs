@@ -39,7 +39,6 @@ impl Runnable for RestoreCommand {
             status_err!("Error, unable to list objects from bucket: {}", e);
             process::exit(1);
         });
-        dbg!(&response);
 
         let mut unpacker = Unpacker::new(response, path);
         unpacker.unpack().unwrap_or_else(|e| {

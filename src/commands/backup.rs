@@ -37,7 +37,6 @@ impl Runnable for BackupCommand {
         let path = &config.backup.path;
         let name = &config.backup.name;
         let tar = path.join(name);
-        dbg!(&tar);
         let tar_file = File::create(&tar).unwrap();
 
         // pack up dir
@@ -49,10 +48,9 @@ impl Runnable for BackupCommand {
 
         // upload obj to bucket
         let backup = File::open(&tar).unwrap();
-        let response = Storage::insert(&token, bucket, backup, name, proxy).unwrap_or_else(|e| {
+        Storage::insert(&token, bucket, backup, name, proxy).unwrap_or_else(|e| {
             status_err!("Error, unable to upload object to bucket: {}", e);
             process::exit(1);
         });
-        dbg!(&response);
     }
 }
