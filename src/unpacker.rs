@@ -1,6 +1,4 @@
 use crate::error::CanisterError;
-use crate::gcp::gcr::ImageId;
-use crate::prelude::*;
 use hex;
 use libflate::gzip::Decoder;
 use sha2::{Digest, Sha256};
@@ -14,11 +12,12 @@ pub struct Unpacker<R: Read> {
 }
 
 impl<R: Read> Unpacker<R> {
-    pub fn new(reader: R, imageid: &ImageId) -> Self {
-        let config = app_config();
-        let path = config.path.join(imageid.to_string());
+    pub fn new(reader: R, path: impl Into<PathBuf>) -> Self {
         let hasher = Hasher::new(reader);
-        Self { hasher, path }
+        Self {
+            hasher,
+            path: path.into(),
+        }
     }
 
     pub fn unpack(&mut self) -> Result<(), CanisterError> {

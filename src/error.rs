@@ -69,3 +69,9 @@ impl From<FromUtf8Error> for CanisterError {
         CanisterError(CanisterErrorKind::ParseError.into())
     }
 }
+
+impl From<reqwest::UrlError> for CanisterError {
+    fn from(_err: reqwest::UrlError) -> Self {
+        CanisterError(CanisterErrorKind::ParseError.into())
+    }
+}

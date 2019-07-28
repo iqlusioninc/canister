@@ -9,3 +9,8 @@ proxy = "https://example.com:8080"
 [run_command]
 path = "/home/app/awesome-project/current/awesome-bin"
 args = ["start"]
+
+[snapshot]
+bucket = "awesome-project-snapshots"
+path = "/home/app/awesome-project/data"
+tar_file = "/home/app/awesome-project-2019-06-25.tgz"

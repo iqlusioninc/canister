@@ -35,7 +35,7 @@ impl Runnable for DeployCommand {
         let tag = &config.tag;
         let object_path = &config.object;
         let path = &config.path;
-        let proxy = config.proxy.as_ref().map(|p| p.as_str());
+        let proxy = config.proxy.as_ref().map(String::as_str);
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
@@ -61,7 +61,7 @@ impl Runnable for DeployCommand {
             status_err!("Error, unable to download object from bucket: {}", e);
             process::exit(1);
         });
-        let mut unpacker = Unpacker::new(response, &image_id);
+        let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
         unpacker.unpack().unwrap_or_else(|e| {
             status_err!("Error, unable to unpack archive: {}", e);
             process::exit(1);
