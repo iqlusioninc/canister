@@ -3,7 +3,7 @@ use crate::error::CanisterError;
 use percent_encoding::{percent_encode, PATH_SEGMENT_ENCODE_SET};
 use reqwest::header::{HeaderValue, CONTENT_TYPE};
 use reqwest::Url;
-use std::fs::File;
+use std::io::Read;
 
 pub struct Storage {
     pub bucket: String,
@@ -63,10 +63,10 @@ impl Storage {
     }
 
     // https://cloud.google.com/storage/docs/json_api/v1/objects/insert
-    pub fn insert(
+    pub fn insert<R:Read + Send + 'static>(
         token: &oauth::Token,
         bucket: &str,
-        object: File,
+        object: R,
         name: &str,
         proxy: Option<&str>,
     ) -> Result<reqwest::Response, CanisterError> {
@@ -88,7 +88,7 @@ impl Storage {
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
 
-        let response = storage_client.post(url.as_str()).body(object).send()?;
+        let response = storage_client.post(url.as_str()).body(reqwest::Body::new(object)).send()?;
         if !response.status().is_success() {
             panic!("{}", response.status())
         }
