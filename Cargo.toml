@@ -11,6 +11,7 @@ categories  = ["command-line-utilities"]
 keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 
 [dependencies]
+abscissa_core = "0.2"
 failure = "0.1"
 failure_derive = "0.1"
 gumdrop = "0.6"
@@ -34,8 +35,3 @@ buildflags = ["--release"]
 
 [package.metadata.rpm.targets]
 canister = { path = "/usr/bin/canister" }
-
-[dependencies.abscissa_core]
-version = "0.2.0"
-default-features = false
-features = ["application", "signals", "secrets", "time"]
