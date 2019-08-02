@@ -63,7 +63,7 @@ impl Storage {
     }
 
     // https://cloud.google.com/storage/docs/json_api/v1/objects/insert
-    pub fn insert<R:Read + Send + 'static>(
+    pub fn insert<R: Read + Send + 'static>(
         token: &oauth::Token,
         bucket: &str,
         object: R,
@@ -88,7 +88,11 @@ impl Storage {
             None => reqwest::Client::builder().default_headers(headers).build(),
         }?;
 
-        let response = storage_client.post(url.as_str()).body(reqwest::Body::new(object)).send()?;
+        let response = storage_client
+            .post(url.as_str())
+            .body(reqwest::Body::new(object))
+            .send()?;
+        dbg!(&response);
         if !response.status().is_success() {
             panic!("{}", response.status())
         }

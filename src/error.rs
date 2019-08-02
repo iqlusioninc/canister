@@ -53,8 +53,8 @@ impl From<io::Error> for CanisterError {
 }
 
 impl From<reqwest::Error> for CanisterError {
-    fn from(_err: reqwest::Error) -> Self {
-        CanisterError(CanisterErrorKind::ReqwestError.into())
+    fn from(err: reqwest::Error) -> Self {
+        err!(CanisterErrorKind::ReqwestError, "{}", err).into()
     }
 }
 

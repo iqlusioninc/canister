@@ -2,7 +2,7 @@ use crate::gcp::{Storage, Token};
 use crate::packer::Packer;
 use crate::prelude::*;
 use abscissa_core::{Command, Runnable};
-use std::process;
+use std::{process, thread};
 
 #[derive(Command, Debug, Options)]
 pub struct BackupCommand {
@@ -31,14 +31,16 @@ impl Runnable for BackupCommand {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);
         });
-        
+
         let (reader, writer) = os_pipe::pipe().unwrap();
 
         // pack up dir
-        let mut packer = Packer::new(writer);
-        packer.pack().unwrap_or_else(|e| {
-            status_err!("Error, uneable to pack archive: {}", e);
-            process::exit(1);
+        let packer_thread = thread::spawn(move || {
+            let mut packer = Packer::new(writer);
+            packer.pack().unwrap_or_else(|e| {
+                status_err!("Error, unable to pack archive: {}", e);
+                process::exit(1);
+            });
         });
 
         // upload obj to bucket
@@ -46,5 +48,7 @@ impl Runnable for BackupCommand {
             status_err!("Error, unable to upload object to bucket: {}", e);
             process::exit(1);
         });
+
+        packer_thread.join().unwrap();
     }
 }
