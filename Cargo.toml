@@ -13,7 +13,7 @@ keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 [dependencies]
 failure = "0.1"
 failure_derive = "0.1"
-gumdrop = "0.6"
+gumdrop = "0.7"
 hex = "0.4"
 hyper = "0.11"
 percent-encoding = "1"
