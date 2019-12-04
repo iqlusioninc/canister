@@ -1,9 +1,21 @@
 use super::oauth::{self, AuthHeader};
 use crate::error::CanisterError;
-use percent_encoding::{percent_encode, PATH_SEGMENT_ENCODE_SET};
+use percent_encoding::{percent_encode, AsciiSet, CONTROLS};
 use reqwest::header::{HeaderValue, CONTENT_TYPE};
 use reqwest::Url;
 use std::fs::File;
+
+// https://url.spec.whatwg.org/#path-percent-encode-set
+const PATH_SEGMENT_ENCODE_SET: &AsciiSet = &CONTROLS
+    .add(b' ')
+    .add(b'"')
+    .add(b'<')
+    .add(b'>')
+    .add(b'`')
+    .add(b'#')
+    .add(b'?')
+    .add(b'{')
+    .add(b'}');
 
 pub struct Storage {
     pub bucket: String,
