@@ -44,7 +44,7 @@ impl Token {
             .args(&["auth", "print-access-token"])
             .output()
             .expect("gcloud auth print-access-token cmd failed");
-        let mut token = String::from_utf8(cmd.stdout.to_owned())?;
+        let mut token = String::from_utf8(cmd.stdout)?;
         let len = token.len();
         token.truncate(len - 1);
         Ok(Self { token })
