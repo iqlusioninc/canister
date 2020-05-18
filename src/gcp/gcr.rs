@@ -8,8 +8,6 @@ use serde_json;
 use sha2::{Digest, Sha256};
 use std::fmt;
 
-header! { (DockerContentDigest, "Docker-Content-Digest") => [String] }
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Manifest {
     #[serde(rename = "schemaVersion")]

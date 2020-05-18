@@ -40,8 +40,8 @@ impl From<abscissa_core::Error<CanisterErrorKind>> for CanisterError {
     }
 }
 
-impl From<hyper::mime::FromStrError> for CanisterError {
-    fn from(_err: hyper::mime::FromStrError) -> Self {
+impl From<hyper::header::ToStrError> for CanisterError {
+    fn from(_err: hyper::header::ToStrError) -> Self {
         CanisterError(CanisterErrorKind::ParseError.into())
     }
 }
