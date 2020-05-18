@@ -1,10 +1,8 @@
 use crate::error::CanisterError;
-use hex;
 use libflate::gzip::Decoder;
 use sha2::{Digest, Sha256};
 use std::io::{self, Read};
 use std::path::PathBuf;
-use tar;
 
 pub struct Unpacker<R: Read> {
     hasher: Hasher<R>,

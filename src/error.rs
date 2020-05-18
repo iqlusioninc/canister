@@ -1,7 +1,4 @@
 use abscissa_core::Error;
-use hyper;
-use reqwest;
-use serde_json;
 use std::fmt::{self, Display};
 use std::{io, string::FromUtf8Error};
 
