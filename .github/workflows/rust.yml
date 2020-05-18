@@ -26,7 +26,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: audit
-          args: --deny-warnings --ignore RUSTSEC-2019-0011 --ignore RUSTSEC-2019-0013
+          args: --deny-warnings --ignore RUSTSEC-2019-0011 --ignore RUSTSEC-2019-0013 --ignore RUSTSEC-2020-0016
 
   check:
     name: Check

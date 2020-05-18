@@ -1,14 +1,9 @@
 use super::oauth::{self, AuthHeader};
 use crate::error::{CanisterError, CanisterErrorKind::*};
-use hex;
-use reqwest;
 use reqwest::header::ACCEPT;
 use serde::{Deserialize, Serialize};
-use serde_json;
 use sha2::{Digest, Sha256};
 use std::fmt;
-
-header! { (DockerContentDigest, "Docker-Content-Digest") => [String] }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Manifest {

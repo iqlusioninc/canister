@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate abscissa_core;
-#[macro_use]
 extern crate hyper;
 extern crate lazy_static;
 #[macro_use]

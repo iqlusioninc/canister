@@ -27,7 +27,7 @@ impl Runnable for BackupCommand {
     fn run(&self) {
         let config = app_config();
         let bucket = &config.backup.bucket;
-        let proxy = config.proxy.as_ref().map(String::as_str);
+        let proxy = config.proxy.as_deref();
         let token = Token::from_gcloud_tool().unwrap_or_else(|e| {
             status_err!("Error, gcloud auth print-access-token cmd failed: {}", e);
             process::exit(1);

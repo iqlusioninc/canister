@@ -3,7 +3,6 @@ use crate::prelude::*;
 use libflate::gzip::Encoder;
 use std::io::Write;
 use std::path::PathBuf;
-use tar;
 use walkdir::WalkDir;
 
 pub struct Packer<W: Write> {
