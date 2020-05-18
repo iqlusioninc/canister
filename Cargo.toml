@@ -11,16 +11,15 @@ categories  = ["command-line-utilities"]
 keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 
 [dependencies]
-failure = "0.1"
 gumdrop = "0.7"
 hex = "0.4"
 hyper = "0.13"
 percent-encoding = "2"
-lazy_static = "1"
 libflate = "0.1"
 log = "0.4"
 os_pipe = "0.9"
 reqwest = "0.9"
+thiserror = "1"
 serde = { version = "1", features = ["serde_derive"] }
 serde_json = "1"
 subtle-encoding = "0.5"
@@ -34,5 +33,8 @@ buildflags = ["--release"]
 [package.metadata.rpm.targets]
 canister = { path = "/usr/bin/canister" }
 
+[dev-dependencies]
+once_cell = "1"
+
 [dependencies.abscissa_core]
-version = "0.4.0"
+version = "0.5"

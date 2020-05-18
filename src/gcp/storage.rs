@@ -1,5 +1,5 @@
 use super::oauth::{self, AuthHeader};
-use crate::error::CanisterError;
+use crate::error::Error;
 use percent_encoding::{percent_encode, AsciiSet, CONTROLS};
 use reqwest::header::{HeaderValue, CONTENT_TYPE};
 use reqwest::Url;
@@ -29,7 +29,7 @@ impl Storage {
         bucket: &str,
         object: &str,
         proxy: Option<&str>,
-    ) -> Result<reqwest::Response, CanisterError> {
+    ) -> Result<reqwest::Response, Error> {
         let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
         let mut url = base
             .join(&format!("{}/", bucket))?
@@ -56,7 +56,7 @@ impl Storage {
         token: &oauth::Token,
         bucket: &str,
         proxy: Option<&str>,
-    ) -> Result<reqwest::Response, CanisterError> {
+    ) -> Result<reqwest::Response, Error> {
         let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
         let url = base.join(&format!("{}/", bucket))?.join("o/")?;
         let headers = token.headers(AuthHeader::Bearer);
@@ -81,7 +81,7 @@ impl Storage {
         object: File,
         name: &str,
         proxy: Option<&str>,
-    ) -> Result<reqwest::Response, CanisterError> {
+    ) -> Result<reqwest::Response, Error> {
         let base = Url::parse("https://www.googleapis.com/upload/storage/v1/b/")?;
         let mut url = base.join(&format!("{}/", bucket))?.join("o")?;
         url.set_query(Some(&format!("uploadType=media&name={}", name)));

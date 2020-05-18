@@ -1,7 +1,7 @@
 use crate::gcp::{Storage, Token};
 use crate::prelude::*;
 use crate::unpacker::Unpacker;
-use abscissa_core::{Command, Runnable};
+use abscissa_core::{Command, Runnable, Options};
 use std::process;
 
 #[derive(Command, Debug, Options)]

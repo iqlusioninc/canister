@@ -1,7 +1,7 @@
 use crate::gcp::{Manifest, Storage, Token};
 use crate::prelude::*;
 use crate::unpacker::{HexDigest, Unpacker};
-use abscissa_core::{Command, Runnable};
+use abscissa_core::{Command, Runnable, Options};
 use std::process;
 
 use std::fs;

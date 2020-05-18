@@ -1,5 +1,8 @@
 use super::oauth::{self, AuthHeader};
-use crate::error::{CanisterError, CanisterErrorKind::*};
+use crate::{
+    error::{Error, ErrorKind::*},
+    prelude::*
+};
 use reqwest::header::ACCEPT;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -40,7 +43,7 @@ impl Manifest {
         image: &str,
         tag: &str,
         proxy: Option<&str>,
-    ) -> Result<(ImageId, Self), CanisterError> {
+    ) -> Result<(ImageId, Self), Error> {
         let mut headers = token.headers(AuthHeader::Basic);
         headers.insert(
             ACCEPT,
@@ -64,7 +67,7 @@ impl Manifest {
         let docker_digest_header = response
             .headers()
             .get("Docker-Content-Digest")
-            .ok_or_else(|| CanisterError::from(err!(ContentDigestMissing, "{}", url)))?
+            .ok_or_else(|| Error::from(format_err!(ContentDigestMissing, "{}", url)))?
             .to_str()
             .unwrap()
             .to_owned();

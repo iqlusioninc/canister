@@ -1,9 +1,4 @@
-#[macro_use]
-extern crate abscissa_core;
-extern crate hyper;
-extern crate lazy_static;
-#[macro_use]
-extern crate log;
+//! Canister
 
 pub mod application;
 pub mod commands;

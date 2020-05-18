@@ -3,7 +3,7 @@
 #![allow(clippy::never_loop)]
 
 use super::CanisterCommand;
-use abscissa_core::{Command, Runnable};
+use abscissa_core::{Command, Runnable, Options};
 
 /// The `version` subcommand
 #[derive(Command, Debug, Default, Options)]

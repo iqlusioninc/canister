@@ -1,74 +1,91 @@
-use abscissa_core::Error;
+use abscissa_core::error::{BoxError, Context};
+use std::ops::Deref;
 use std::fmt::{self, Display};
 use std::{io, string::FromUtf8Error};
+use thiserror::Error;
 
 /// Abscissa error type for canister
-pub struct CanisterError(Error<CanisterErrorKind>);
+pub struct Error(Box<Context<ErrorKind>>);
 
 /// Types of errors which occur internally within canister
-#[derive(Fail, Clone, Debug, Eq, PartialEq)]
-pub enum CanisterErrorKind {
+#[derive(Copy, Clone, Debug, Eq, Error, PartialEq)]
+pub enum ErrorKind {
     /// I/O operation failed
-    #[fail(display = "I/O operation failed")]
+    #[error("I/O operation failed")]
     IoError,
 
     /// Parse Error
-    #[fail(display = "Parse error")]
+    #[error("Parse error")]
     ParseError,
 
     /// Reqwest Error
-    #[fail(display = "Reqwest error")]
+    #[error("Reqwest error")]
     ReqwestError,
 
     /// Content Digest missing
-    #[fail(display = "no content digest in response (access control issue?)")]
+    #[error("no content digest in response (access control issue?)")]
     ContentDigestMissing,
 }
 
-impl Display for CanisterError {
+impl ErrorKind {
+    /// Create an error context from this error
+    pub fn context(self, source: impl Into<BoxError>) -> Context<ErrorKind> {
+        Context::new(self, Some(source.into()))
+    }
+}
+
+impl Deref for Error {
+    type Target = Context<ErrorKind>;
+
+    fn deref(&self) -> &Context<ErrorKind> {
+        &self.0
+    }
+}
+
+impl Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.0.fmt(f)
     }
 }
 
-impl From<abscissa_core::Error<CanisterErrorKind>> for CanisterError {
-    fn from(err: abscissa_core::Error<CanisterErrorKind>) -> Self {
-        CanisterError(err)
+impl From<Context<ErrorKind>> for Error {
+    fn from(ctx: Context<ErrorKind>) -> Self {
+        Error(Box::new(ctx))
     }
 }
 
-impl From<hyper::header::ToStrError> for CanisterError {
-    fn from(_err: hyper::header::ToStrError) -> Self {
-        CanisterError(CanisterErrorKind::ParseError.into())
+impl From<hyper::header::ToStrError> for Error {
+    fn from(err: hyper::header::ToStrError) -> Self {
+        ErrorKind::ParseError.context(err).into()
     }
 }
 
-impl From<io::Error> for CanisterError {
-    fn from(_err: io::Error) -> Self {
-        CanisterError(CanisterErrorKind::IoError.into())
+impl From<io::Error> for Error {
+    fn from(err: io::Error) -> Self {
+        ErrorKind::IoError.context(err).into()
     }
 }
 
-impl From<reqwest::Error> for CanisterError {
-    fn from(_err: reqwest::Error) -> Self {
-        CanisterError(CanisterErrorKind::ReqwestError.into())
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Self {
+        ErrorKind::ReqwestError.context(err).into()
     }
 }
 
-impl From<serde_json::Error> for CanisterError {
-    fn from(_err: serde_json::Error) -> Self {
-        CanisterError(CanisterErrorKind::ParseError.into())
+impl From<serde_json::Error> for Error {
+    fn from(err: serde_json::Error) -> Self {
+        ErrorKind::ParseError.context(err).into()
     }
 }
 
-impl From<FromUtf8Error> for CanisterError {
-    fn from(_err: FromUtf8Error) -> Self {
-        CanisterError(CanisterErrorKind::ParseError.into())
+impl From<FromUtf8Error> for Error {
+    fn from(err: FromUtf8Error) -> Self {
+        Error(ErrorKind::ParseError.context(err).into())
     }
 }
 
-impl From<reqwest::UrlError> for CanisterError {
-    fn from(_err: reqwest::UrlError) -> Self {
-        CanisterError(CanisterErrorKind::ParseError.into())
+impl From<reqwest::UrlError> for Error {
+    fn from(err: reqwest::UrlError) -> Self {
+        Error(ErrorKind::ParseError.context(err).into())
     }
 }
