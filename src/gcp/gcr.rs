@@ -1,7 +1,7 @@
 use super::oauth::{self, AuthHeader};
 use crate::{
     error::{Error, ErrorKind::*},
-    prelude::*
+    prelude::*,
 };
 use reqwest::header::ACCEPT;
 use serde::{Deserialize, Serialize};

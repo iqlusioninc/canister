@@ -1,7 +1,10 @@
 //! Canister Abscissa Application
 
 use crate::{commands::CanisterCommand, config::CanisterConfig};
-use abscissa_core::{application, FrameworkError, application::AppCell, Application, StandardPaths, config, EntryPoint, trace};
+use abscissa_core::{
+    application, application::AppCell, config, trace, Application, EntryPoint, FrameworkError,
+    StandardPaths,
+};
 
 /// Application state
 pub static APPLICATION: AppCell<CanisterApplication> = AppCell::new();

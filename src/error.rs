@@ -1,6 +1,6 @@
 use abscissa_core::error::{BoxError, Context};
-use std::ops::Deref;
 use std::fmt::{self, Display};
+use std::ops::Deref;
 use std::{io, string::FromUtf8Error};
 use thiserror::Error;
 
