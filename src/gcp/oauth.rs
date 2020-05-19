@@ -1,4 +1,4 @@
-use crate::error::CanisterError;
+use crate::error::Error;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use std::process::Command;
 use subtle_encoding::base64;
@@ -39,7 +39,7 @@ impl AuthHeader {
 }
 
 impl Token {
-    pub fn from_gcloud_tool() -> Result<Token, CanisterError> {
+    pub fn from_gcloud_tool() -> Result<Token, Error> {
         let cmd = Command::new("gcloud")
             .args(&["auth", "print-access-token"])
             .output()

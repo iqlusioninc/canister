@@ -1,4 +1,4 @@
-use crate::error::CanisterError;
+use crate::error::Error;
 use crate::prelude::*;
 use libflate::gzip::Encoder;
 use std::io::Write;
@@ -17,7 +17,7 @@ impl<W: Write> Packer<W> {
         Self { writer, path }
     }
 
-    pub fn pack(&mut self) -> Result<(), CanisterError> {
+    pub fn pack(&mut self) -> Result<(), Error> {
         let mut encoder = Encoder::new(&mut self.writer).unwrap();
         {
             let mut archive = tar::Builder::new(&mut encoder);

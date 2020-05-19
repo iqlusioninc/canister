@@ -1,14 +1,13 @@
 //! Canister Abscissa Application
 
 use crate::{commands::CanisterCommand, config::CanisterConfig};
-use abscissa_core::{application, config, logging};
-use abscissa_core::{Application, EntryPoint, FrameworkError, StandardPaths};
-use lazy_static::lazy_static;
+use abscissa_core::{
+    application, application::AppCell, config, trace, Application, EntryPoint, FrameworkError,
+    StandardPaths,
+};
 
-lazy_static! {
-    /// Application state
-    pub static ref APPLICATION: application::Lock<CanisterApplication> = application::Lock::default();
-}
+/// Application state
+pub static APPLICATION: AppCell<CanisterApplication> = AppCell::new();
 
 /// Obtain a read-only (multi-reader) lock on the application state.
 ///
@@ -99,12 +98,12 @@ impl Application for CanisterApplication {
         Ok(())
     }
 
-    /// Get logging configuration from command-line options
-    fn logging_config(&self, command: &EntryPoint<CanisterCommand>) -> logging::Config {
+    /// Get tracing configuration from command-line options
+    fn tracing_config(&self, command: &EntryPoint<CanisterCommand>) -> trace::Config {
         if command.verbose {
-            logging::Config::verbose()
+            trace::Config::verbose()
         } else {
-            logging::Config::default()
+            trace::Config::default()
         }
     }
 }

@@ -1,7 +1,7 @@
 use crate::gcp::{Manifest, Storage, Token};
 use crate::prelude::*;
 use crate::unpacker::{HexDigest, Unpacker};
-use abscissa_core::{Command, Runnable};
+use abscissa_core::{Command, Options, Runnable};
 use std::process;
 
 use std::fs;
@@ -27,6 +27,7 @@ impl Default for DeployCommand {
 }
 
 impl Runnable for DeployCommand {
+    #[allow(clippy::complexity)]
     fn run(&self) {
         let config = app_config();
         let project = &config.project;

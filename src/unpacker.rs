@@ -1,4 +1,4 @@
-use crate::error::CanisterError;
+use crate::error::Error;
 use libflate::gzip::Decoder;
 use sha2::{Digest, Sha256};
 use std::io::{self, Read};
@@ -18,7 +18,7 @@ impl<R: Read> Unpacker<R> {
         }
     }
 
-    pub fn unpack(&mut self) -> Result<(), CanisterError> {
+    pub fn unpack(&mut self) -> Result<(), Error> {
         let decoder = Decoder::new(&mut self.hasher).unwrap();
         let mut archive = tar::Archive::new(decoder);
         archive.unpack(&self.path).unwrap();
