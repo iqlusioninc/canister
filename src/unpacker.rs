@@ -46,14 +46,14 @@ impl<R: Read> Hasher<R> {
     }
 
     pub fn hex_digest(self) -> HexDigest {
-        HexDigest(hex::encode(self.digest.result()))
+        HexDigest(hex::encode(self.digest.finalize()))
     }
 }
 
 impl<R: Read> Read for Hasher<R> {
     fn read(&mut self, buffer: &mut [u8]) -> io::Result<usize> {
         let nbytes = self.reader.read(buffer)?;
-        self.digest.input(&buffer[..nbytes]);
+        self.digest.update(&buffer[..nbytes]);
         Ok(nbytes)
     }
 }
