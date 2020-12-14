@@ -18,9 +18,9 @@ pub enum ErrorKind {
     #[error("Parse error")]
     ParseError,
 
-    /// Reqwest Error
-    #[error("Reqwest error")]
-    ReqwestError,
+    /// HTTP Errors
+    #[error("HTTP error")]
+    HttpError,
 
     /// Content Digest missing
     #[error("no content digest in response (access control issue?)")]
@@ -66,10 +66,9 @@ impl From<io::Error> for Error {
     }
 }
 
-impl From<reqwest::Error> for Error {
-    fn from(err: reqwest::Error) -> Self {
-        ErrorKind::ReqwestError.context(err).into()
-    }
+impl From<http::uri::InvalidUri> for Error {
+    fn from(err: http::uri::InvalidUri) -> Self { ErrorKind::HttpError.context(err).into()}
+
 }
 
 impl From<serde_json::Error> for Error {
@@ -84,8 +83,8 @@ impl From<FromUtf8Error> for Error {
     }
 }
 
-impl From<reqwest::UrlError> for Error {
-    fn from(err: reqwest::UrlError) -> Self {
-        Error(ErrorKind::ParseError.context(err).into())
+impl From<hyper::Error> for Error {
+    fn from(err: hyper::Error) -> Self {
+        ErrorKind::HttpError.context(err).into()
     }
 }

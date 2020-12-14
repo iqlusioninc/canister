@@ -1,3 +1,4 @@
+use hyper::Uri;
 use serde::Deserialize;
 use std::path::PathBuf;
 
@@ -11,7 +12,7 @@ pub struct CanisterConfig {
     pub tag: String,
     pub object: String,
     pub path: PathBuf,
-    pub proxy: Option<String>,
+    pub proxy: Option<Uri>,
     pub run_command: RunCommandConfig,
     pub backup: BackupConfig,
 }

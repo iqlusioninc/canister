@@ -1,8 +1,13 @@
 use super::oauth::{self, AuthHeader};
-use crate::error::Error;
+use crate::error::{Error, ErrorKind};
+use http::Uri;
+use hyper::{
+    client::{Client, HttpConnector, ResponseFuture},
+    header, Body, Method, Request, Response,
+};
+use hyper_proxy::{Intercept, Proxy, ProxyConnector};
+use hyper_rustls::HttpsConnector;
 use percent_encoding::{percent_encode, AsciiSet, CONTROLS};
-use reqwest::header::{HeaderValue, CONTENT_TYPE};
-use reqwest::Url;
 use std::fs::File;
 
 // https://url.spec.whatwg.org/#path-percent-encode-set
@@ -28,9 +33,9 @@ impl Storage {
         token: &oauth::Token,
         bucket: &str,
         object: &str,
-        proxy: Option<&str>,
-    ) -> Result<reqwest::Response, Error> {
-        let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
+        proxy: Option<&Uri>,
+    ) -> Result<hyper::Response<hyper::Body>, Error> {
+        let base = "https://www.googleapis.com/storage/v1/b/".parse()?;
         let mut url = base
             .join(&format!("{}/", bucket))?
             .join("o/")?
@@ -38,13 +43,20 @@ impl Storage {
         url.set_query(Some("alt=media"));
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
-            Some(p) => reqwest::Client::builder()
+            Some(proxy_uri) => {
+                let proxy = Proxy::new(Intercept::All, proxy_uri.clone());
+                proxy.set_header(headers.keys(), headers.values());
+                let connector = HttpsConnector::new();
+                let proxy_connector = ProxyConnector::from_proxy(connector, proxy)
+                    .map_err(|e| ErrorKind::HttpError.context(e))?;
+                Client::builder.build(proxy_connector);
+            }
+            None => Client::builder()
                 .default_headers(headers)
-                .proxy(reqwest::Proxy::all(p)?)
-                .build(),
-            None => reqwest::Client::builder().default_headers(headers).build(),
+                .build(HttpsConnector::new()),
         }?;
         let response = storage_client.get(url.as_str()).send()?;
+
         if !response.status().is_success() {
             panic!("{}", response.status())
         }
@@ -55,18 +67,23 @@ impl Storage {
     pub fn list(
         token: &oauth::Token,
         bucket: &str,
-        proxy: Option<&str>,
-    ) -> Result<reqwest::Response, Error> {
-        let base = Url::parse("https://www.googleapis.com/storage/v1/b/")?;
+        proxy: Option<&Uri>,
+    ) -> Result<hyper::Response<hyper::Body>, Error> {
+        let base = "https://www.googleapis.com/storage/v1/b/".parse()?;
         let url = base.join(&format!("{}/", bucket))?.join("o/")?;
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
-            Some(p) => reqwest::Client::builder()
-                .default_headers(headers)
-                .proxy(reqwest::Proxy::all(p)?)
-                .build(),
-            None => reqwest::Client::builder().default_headers(headers).build(),
+            Some(proxy_uri) => {
+                let proxy = Proxy::new(Intercept::All, proxy_uri.clone());
+                proxy.set_headers(headers.keys(), headers.value());
+                let connector = HttpsConnector::new();
+                let proxy_connector = ProxyConnector::from_proxy(connector, proxy)
+                    .map_err(|e| ErrorKind::HttpError.context(e))?;
+                Client::builder().build(proxy_connector);
+            }
+            None => Client::builder().default_headers(headers).build(),
         }?;
+
         let response = storage_client.get(url.as_str()).send()?;
         if !response.status().is_success() {
             panic!("{}", response.status())
@@ -75,32 +92,43 @@ impl Storage {
     }
 
     // https://cloud.google.com/storage/docs/json_api/v1/objects/insert
-    pub fn insert(
+    pub async fn insert(
         token: &oauth::Token,
         bucket: &str,
         object: File,
         name: &str,
-        proxy: Option<&str>,
-    ) -> Result<reqwest::Response, Error> {
-        let base = Url::parse("https://www.googleapis.com/upload/storage/v1/b/")?;
+        proxy: Option<&Uri>,
+    ) -> Result<hyper::Response<hyper::Body>, Error> {
+        let base :Uri = "https://www.googleapis.com/upload/storage/v1/b/".parse::<Uri>().unwrap();
         let mut url = base.join(&format!("{}/", bucket))?.join("o")?;
         url.set_query(Some(&format!("uploadType=media&name={}", name)));
 
         let mut headers = token.headers(AuthHeader::Bearer);
         headers.insert(
-            CONTENT_TYPE,
-            HeaderValue::from_static("application/octet-stream"),
+            hyper::header::CONTENT_TYPE,
+            hyper::header::HeaderValue::from_static("application/octet-stream"),
         );
 
+        let request = Request::builder()
+            .method(Method::POST)
+            .uri(url)
+            .headers(headers.clone())
+            .body(object)?;
+
         let storage_client = match proxy {
-            Some(p) => reqwest::Client::builder()
-                .default_headers(headers)
-                .proxy(reqwest::Proxy::all(p)?)
-                .build(),
-            None => reqwest::Client::builder().default_headers(headers).build(),
+            Some(proxy_uri) => {
+                let proxy = Proxy::new(Intercept::All, proxy_uri.clone());
+                proxy.set_headers(headers.keys(), headers.value());
+                let connector = HttpsConnector::new();
+                let proxy_connector = ProxyConnector::from_proxy(connector, proxy)
+                    .map_err(|e| ErrorKind::Http.context(e))?;
+                Client::builder().build(proxy_connector);
+            }
+            None => Client::builder().default_headers(headers).build(),
         }?;
 
-        let response = storage_client.post(url.as_str()).body(object).send()?;
+        let response = storage_client.request(request).await?;
+        //let response = storage_client.post(url.as_str()).body(object).send()?;
         if !response.status().is_success() {
             panic!("{}", response.status())
         }

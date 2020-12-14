@@ -3,7 +3,13 @@ use crate::{
     error::{Error, ErrorKind::*},
     prelude::*,
 };
-use reqwest::header::ACCEPT;
+use hyper::{
+    client::{Client, HttpConnector, ResponseFuture},
+    header::ACCEPT,
+    Body, Request, Response, Uri,
+};
+use hyper_proxy::{Intercept, Proxy, ProxyConnector};
+use hyper_rustls::HttpsConnector;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::fmt;
@@ -42,7 +48,7 @@ impl Manifest {
         project: &str,
         image: &str,
         tag: &str,
-        proxy: Option<&str>,
+        proxy: Option<&Uri>,
     ) -> Result<(ImageId, Self), Error> {
         let mut headers = token.headers(AuthHeader::Basic);
         headers.insert(
@@ -53,11 +59,15 @@ impl Manifest {
         );
 
         let client = match proxy {
-            Some(p) => reqwest::Client::builder()
-                .default_headers(headers)
-                .proxy(reqwest::Proxy::all(p)?)
-                .build(),
-            None => reqwest::Client::builder().default_headers(headers).build(),
+            Some(proxy_uri) => {
+                let proxy = Proxy::new(Intercept::All, proxy_uri.clone());
+                proxy.set_headers(headers.keys(), headers.value());
+                let connector = HttpsConnector::new();
+                let proxy_connector = ProxyConnector::from_proxy(connector, proxy)
+                    .map_err(|e| HttpError.context(e))?;
+                Client::builder().build(proxy_connector);
+            }
+            None => Client::builder().default_headers(headers).build(),
         }?;
 
         let url = format!("https://gcr.io/v2/{}/{}/manifests/{}", project, image, tag);

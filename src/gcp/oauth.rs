@@ -1,5 +1,5 @@
 use crate::error::Error;
-use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
+use hyper::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 use std::process::Command;
 use subtle_encoding::base64;
 
