@@ -1,4 +1,4 @@
-use hyper::Uri;
+use http::Uri;
 use serde::Deserialize;
 use std::path::PathBuf;
 

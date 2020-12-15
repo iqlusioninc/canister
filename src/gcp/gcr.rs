@@ -4,9 +4,9 @@ use crate::{
     prelude::*,
 };
 use hyper::{
-    client::{Client, HttpConnector, ResponseFuture},
+    client::{Client},
     header::ACCEPT,
-    Body, Request, Response, Uri,
+    Uri,
 };
 use hyper_proxy::{Intercept, Proxy, ProxyConnector};
 use hyper_rustls::HttpsConnector;
@@ -61,7 +61,6 @@ impl Manifest {
         let client = match proxy {
             Some(proxy_uri) => {
                 let proxy = Proxy::new(Intercept::All, proxy_uri.clone());
-                proxy.set_headers(headers.keys(), headers.value());
                 let connector = HttpsConnector::new();
                 let proxy_connector = ProxyConnector::from_proxy(connector, proxy)
                     .map_err(|e| HttpError.context(e))?;

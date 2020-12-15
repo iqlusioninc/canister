@@ -1,14 +1,15 @@
 //! HTTPS Client
 
-use crate::{config::HttpsConfig, Error, ErrorKind};
-use bytes::buf::ext::BufExt;
+use crate::{
+    error::{Error, ErrorKind},
+    gcp::oauth,
+};
 use hyper::{
     client::{Client, HttpConnector, ResponseFuture},
     header, Body, Request, Response, Uri,
 };
 use hyper_proxy::{Intercept, Proxy, ProxyConnector};
 use hyper_rustls::HttpsConnector;
-use serde::de::DeserializeOwned;
 use std::collections::BTreeMap;
 use std::fmt::{self, Display};
 use std::iter::FromIterator;
@@ -20,18 +21,22 @@ pub const USER_AGENT: &str = "iqlusion canister";
 pub struct HttpsClient {
     inner: InnerClient,
     hostname: String,
+    token: oauth::Token,
 }
 
 impl HttpsClient {
     /// Create a new HTTPS client using the provided configuration
-    pub fn new(hostname: impl Into<String>, config: &HttpsConfig) -> Result<Self, Error> {
-        let inner = match &config.proxy {
+    pub fn new(
+        hostname: impl Into<String>,
+        token: oauth::Token,
+        proxy: Option<&Uri>,
+    ) -> Result<Self, Error> {
+        let inner = match proxy {
             Some(proxy_uri) => {
-                // TODO(tarcieri): proxy auth
                 let proxy = Proxy::new(Intercept::All, proxy_uri.clone());
                 let connector = HttpsConnector::new();
                 let proxy_connector = ProxyConnector::from_proxy(connector, proxy)
-                    .map_err(|e| ErrorKind::Http.context(e))?;
+                    .map_err(|e| ErrorKind::HttpError.context(e))?;
                 let client = Client::builder().build(proxy_connector);
 
                 InnerClient::HttpsViaProxy(client)
@@ -44,20 +49,13 @@ impl HttpsClient {
 
         Ok(Self {
             inner,
+            token,
             hostname: hostname.into(),
         })
     }
 
     /// exposes the ability to sent HTTP GET requests and return responses directly.
-    pub async fn get(&self, request: Request<Body>) -> Result<Response<Body>, hyper::error::Error> {
-        self.inner.request(request).await
-    }
-
-    /// HTTP GET request that gets json
-    pub async fn get_json<T>(&self, path: &str, query: &Query) -> Result<T, Error>
-        where
-            T: DeserializeOwned,
-    {
+    pub async fn get(&self, path: &str, query: &Query) -> Result<Response<Body>, Error> {
         let uri = query.to_request_uri(&self.hostname, path);
 
         let mut request = Request::builder()
@@ -67,18 +65,15 @@ impl HttpsClient {
 
         {
             let headers = request.headers_mut();
-            headers.insert(header::CONTENT_TYPE, "application/json".parse().unwrap());
+            headers.insert(header::AUTHORIZATION, self.token.as_str().parse()?);
+            headers.insert(header::CONTENT_TYPE, "application/json".parse()?);
             headers.insert(
                 header::USER_AGENT,
-                format!("{}/{}", USER_AGENT, env!("CARGO_PKG_VERSION"))
-                    .parse()
-                    .unwrap(),
+                format!("{}/{}", USER_AGENT, env!("CARGO_PKG_VERSION")).parse()?,
             );
         }
 
-        let response = self.inner.request(request).await?;
-        let body = hyper::body::aggregate(response.into_body()).await?;
-        Ok(serde_json::from_reader(body.reader())?)
+        Ok(self.inner.request(request).await?)
     }
 }
 
@@ -142,8 +137,8 @@ impl Display for Query {
 
 impl<'a> FromIterator<&'a (String, String)> for Query {
     fn from_iter<I>(iter: I) -> Self
-        where
-            I: IntoIterator<Item = &'a (String, String)>,
+    where
+        I: IntoIterator<Item = &'a (String, String)>,
     {
         let mut params = Self::new();
 

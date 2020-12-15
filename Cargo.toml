@@ -11,6 +11,7 @@ categories  = ["command-line-utilities"]
 keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 
 [dependencies]
+bytes = "0.5"
 gumdrop = "0.7"
 hex = "0.4"
 http = "0.2"

@@ -5,6 +5,7 @@ use std::{io, string::FromUtf8Error};
 use thiserror::Error;
 
 /// Abscissa error type for canister
+#[derive(Clone, Debug)]
 pub struct Error(Box<Context<ErrorKind>>);
 
 /// Types of errors which occur internally within canister
@@ -54,6 +55,18 @@ impl From<Context<ErrorKind>> for Error {
     }
 }
 
+impl From<http::Error> for Error {
+    fn from(err: http::Error) -> Self {
+        ErrorKind::HttpError.context(err).into()
+    }
+}
+
+impl From<hyper::header::InvalidHeaderValue> for Error {
+    fn from(err: hyper::header::InvalidHeaderValue) -> Self {
+        ErrorKind::HttpError.context(err).into()
+    }
+}
+
 impl From<hyper::header::ToStrError> for Error {
     fn from(err: hyper::header::ToStrError) -> Self {
         ErrorKind::ParseError.context(err).into()
@@ -67,8 +80,9 @@ impl From<io::Error> for Error {
 }
 
 impl From<http::uri::InvalidUri> for Error {
-    fn from(err: http::uri::InvalidUri) -> Self { ErrorKind::HttpError.context(err).into()}
-
+    fn from(err: http::uri::InvalidUri) -> Self {
+        ErrorKind::HttpError.context(err).into()
+    }
 }
 
 impl From<serde_json::Error> for Error {

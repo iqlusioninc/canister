@@ -1,5 +1,5 @@
 pub mod gcr;
-mod oauth;
+pub(crate) mod oauth;
 mod storage;
 
 pub use self::gcr::Manifest;
