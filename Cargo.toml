@@ -13,7 +13,7 @@ keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 [dependencies]
 gumdrop = "0.7"
 hex = "0.4"
-hyper = "0.13"
+hyper = "0.14"
 percent-encoding = "2"
 libflate = "1.0"
 log = "0.4"
