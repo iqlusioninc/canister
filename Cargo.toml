@@ -11,13 +11,14 @@ categories  = ["command-line-utilities"]
 keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 
 [dependencies]
-bytes = "0.5"
+abscissa_tokio = "0.5"
+bytes = "1.0"
 gumdrop = "0.7"
 hex = "0.4"
 http = "0.2"
 hyper = "0.13"
 hyper-proxy = "0.8"
-hyper-rustls = "0.21"
+hyper-rustls = "0.22"
 percent-encoding = "2"
 libflate = "1.0"
 log = "0.4"
