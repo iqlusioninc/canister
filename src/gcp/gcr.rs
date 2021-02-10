@@ -3,11 +3,7 @@ use crate::{
     error::{Error, ErrorKind::*},
     prelude::*,
 };
-use hyper::{
-    client::{Client},
-    header::ACCEPT,
-    Uri,
-};
+use hyper::{client::Client, header::ACCEPT, Uri};
 use hyper_proxy::{Intercept, Proxy, ProxyConnector};
 use hyper_rustls::HttpsConnector;
 use serde::{Deserialize, Serialize};

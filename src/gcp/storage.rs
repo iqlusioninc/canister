@@ -47,10 +47,7 @@ impl Storage {
         let mut params = Query::new();
         params.add("alt", "media");
 
-        let response = self
-            .https_client
-            .get(&path, &params)
-            .send()?;
+        let response = self.https_client.get(&path, &params).send()?;
         if !response.status().is_success() {
             panic!("{}", response.status())
         }
