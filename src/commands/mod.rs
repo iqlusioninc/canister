@@ -5,10 +5,7 @@ mod deploy;
 mod run;
 mod version;
 
-pub use self::{
-    deploy::DeployCommand, run::RunCommand,
-    version::VersionCommand,
-};
+pub use self::{deploy::DeployCommand, run::RunCommand, version::VersionCommand};
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
 #[derive(Command, Debug, Options, Runnable)]

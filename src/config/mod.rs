@@ -20,4 +20,3 @@ pub struct RunCommandConfig {
     pub path: PathBuf,
     pub args: Vec<String>,
 }
-
