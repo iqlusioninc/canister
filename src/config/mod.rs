@@ -13,18 +13,10 @@ pub struct CanisterConfig {
     pub path: PathBuf,
     pub proxy: Option<String>,
     pub run_command: RunCommandConfig,
-    pub backup: BackupConfig,
 }
 
 #[derive(Default, Deserialize, Debug)]
 pub struct RunCommandConfig {
     pub path: PathBuf,
     pub args: Vec<String>,
-}
-
-#[derive(Default, Deserialize, Debug)]
-pub struct BackupConfig {
-    pub bucket: String,
-    pub path: PathBuf,
-    pub name: String,
 }
