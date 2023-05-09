@@ -2,7 +2,7 @@
 name        = "canister"
 edition     = "2018"
 description = "Deploy binaries from Google Container Registry (gcr.io)"
-version     = "0.2.0"
+version     = "0.3.0"
 authors     = ["Tony Arcieri <tony@iqlusion.io>", "Shella Stephens <shella@iqlusion.io>"]
 license     = "Apache-2.0"
 homepage    = "https://github.com/iqlusioninc/canister"
