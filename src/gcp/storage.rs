@@ -1,21 +1,9 @@
 use super::oauth::{self, AuthHeader};
 use crate::error::Error;
-use percent_encoding::{percent_encode, AsciiSet, CONTROLS};
+use percent_encoding::{percent_encode, NON_ALPHANUMERIC};
 use reqwest::header::{HeaderValue, CONTENT_TYPE};
 use reqwest::Url;
 use std::fs::File;
-
-// https://url.spec.whatwg.org/#path-percent-encode-set
-const PATH_SEGMENT_ENCODE_SET: &AsciiSet = &CONTROLS
-    .add(b' ')
-    .add(b'"')
-    .add(b'<')
-    .add(b'>')
-    .add(b'`')
-    .add(b'#')
-    .add(b'?')
-    .add(b'{')
-    .add(b'}');
 
 pub struct Storage {
     pub bucket: String,
@@ -34,7 +22,7 @@ impl Storage {
         let mut url = base
             .join(&format!("{}/", bucket))?
             .join("o/")?
-            .join(&percent_encode(object.as_bytes(), PATH_SEGMENT_ENCODE_SET).to_string())?;
+            .join(&percent_encode(object.as_bytes(), NON_ALPHANUMERIC).to_string())?;
         url.set_query(Some("alt=media"));
         let headers = token.headers(AuthHeader::Bearer);
         let storage_client = match proxy {
