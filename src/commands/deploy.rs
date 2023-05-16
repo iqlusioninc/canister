@@ -9,22 +9,13 @@ use std::fs;
 use std::io;
 use std::os::unix;
 
-#[derive(Command, Debug, Parser)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct DeployCommand {
     #[clap(short = 'c', long = "config")]
     pub config: Option<String>,
 
     #[clap(short = 'v', long = "verbose")]
     pub verbose: bool,
-}
-
-impl Default for DeployCommand {
-    fn default() -> Self {
-        Self {
-            config: None,
-            verbose: false,
-        }
-    }
 }
 
 impl Runnable for DeployCommand {

@@ -4,22 +4,13 @@ use clap::Parser;
 
 use super::DeployCommand;
 
-#[derive(Command, Debug, Parser)]
+#[derive(Command, Debug, Default, Parser)]
 pub struct RunCommand {
     #[clap(short = 'c', long = "config")]
     pub config: Option<String>,
 
     #[clap(short = 'v', long = "verbose")]
     pub verbose: bool,
-}
-
-impl Default for RunCommand {
-    fn default() -> Self {
-        Self {
-            config: None,
-            verbose: false,
-        }
-    }
 }
 
 impl Runnable for RunCommand {

@@ -29,7 +29,7 @@ impl AuthHeader {
                     AUTHORIZATION,
                     HeaderValue::from_str(&format!(
                         "Basic {}",
-                        String::from_utf8(base64::encode(&auth)).unwrap()
+                        String::from_utf8(base64::encode(auth)).unwrap()
                     ))
                     .unwrap(),
                 );
@@ -41,7 +41,7 @@ impl AuthHeader {
 impl Token {
     pub fn from_gcloud_tool() -> Result<Token, Error> {
         let cmd = Command::new("gcloud")
-            .args(&["auth", "print-access-token"])
+            .args(["auth", "print-access-token"])
             .output()
             .expect("gcloud auth print-access-token cmd failed");
         let mut token = String::from_utf8(cmd.stdout)?;
