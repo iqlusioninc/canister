@@ -2,13 +2,14 @@
 
 use crate::{commands::CanisterCommand, config::CanisterConfig};
 use abscissa_core::{
-    application, application::AppCell, config::{self, CfgCell}, trace, Application, FrameworkError,
-    StandardPaths,
+    application,
+    application::AppCell,
+    config::{self, CfgCell},
+    trace, Application, FrameworkError, StandardPaths,
 };
 
 /// Application state
 pub static APPLICATION: AppCell<CanisterApplication> = AppCell::new();
-
 
 /// Canister Application
 #[derive(Debug)]
