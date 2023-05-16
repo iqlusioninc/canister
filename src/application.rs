@@ -1,8 +1,8 @@
 //! Canister Abscissa Application
 
-use crate::{commands::CanisterCommand, config::CanisterConfig};
+use crate::{commands::EntryPoint, config::CanisterConfig};
 use abscissa_core::{
-    application, application::AppCell, config, trace, Application, EntryPoint, FrameworkError,
+    application, application::AppCell, config, trace, Application, FrameworkError,
     StandardPaths,
 };
 
@@ -53,7 +53,7 @@ impl Default for CanisterApplication {
 
 impl Application for CanisterApplication {
     /// Entrypoint command for this application.
-    type Cmd = EntryPoint<CanisterCommand>;
+    type Cmd = EntryPoint;
 
     /// Application configuration.
     type Cfg = CanisterConfig;
@@ -99,7 +99,7 @@ impl Application for CanisterApplication {
     }
 
     /// Get tracing configuration from command-line options
-    fn tracing_config(&self, command: &EntryPoint<CanisterCommand>) -> trace::Config {
+    fn tracing_config(&self, command: &EntryPoint) -> trace::Config {
         if command.verbose {
             trace::Config::verbose()
         } else {
