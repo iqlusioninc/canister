@@ -1,4 +1,5 @@
-use abscissa_core::{Command, Configurable, Help, Options, Runnable};
+use abscissa_core::{Command, Configurable, Runnable};
+use clap::Parser;
 use std::path::PathBuf;
 
 mod deploy;
@@ -8,19 +9,13 @@ mod version;
 pub use self::{deploy::DeployCommand, run::RunCommand, version::VersionCommand};
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
-#[derive(Command, Debug, Options, Runnable)]
+#[derive(Command, Debug, Parser, Runnable)]
 pub enum CanisterCommand {
-    #[options(help = "deploy application")]
+    /// subcommands for Deploy
     Deploy(DeployCommand),
 
-    #[options(help = "show help for a command")]
-    Help(Help<Self>),
-
-    #[options(help = "run application")]
+    /// subcommands for Run
     Run(RunCommand),
-
-    #[options(help = "display version information")]
-    Version(VersionCommand),
 }
 
 impl CanisterCommand {
@@ -28,7 +23,6 @@ impl CanisterCommand {
         match self {
             CanisterCommand::Deploy(deploy) => deploy.verbose,
             CanisterCommand::Run(run) => run.verbose,
-            _ => false,
         }
     }
 }
@@ -49,7 +43,6 @@ impl Configurable<CanisterConfig> for CanisterCommand {
                     .map(|s| s.as_ref())
                     .unwrap_or(CONFIG_FILE_NAME),
             )),
-            _ => None,
         }
     }
 }

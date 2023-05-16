@@ -12,7 +12,7 @@ pub struct Packer<W: Write> {
 
 impl<W: Write> Packer<W> {
     pub fn new(writer: W) -> Self {
-        let config = app_config();
+        let config = APPLICATION.config();
         let path = config.path.to_path_buf();
         Self { writer, path }
     }
