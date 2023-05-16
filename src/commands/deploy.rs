@@ -1,19 +1,20 @@
 use crate::gcp::{Manifest, Storage, Token};
 use crate::prelude::*;
 use crate::unpacker::{HexDigest, Unpacker};
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Runnable};
+use clap::Parser;
 use std::process;
 
 use std::fs;
 use std::io;
 use std::os::unix;
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Parser)]
 pub struct DeployCommand {
-    #[options(short = "c", long = "config")]
+    #[clap(short = 'c', long = "config")]
     pub config: Option<String>,
 
-    #[options(short = "v", long = "verbose")]
+    #[clap(short = 'v', long = "verbose")]
     pub verbose: bool,
 }
 
@@ -29,7 +30,7 @@ impl Default for DeployCommand {
 impl Runnable for DeployCommand {
     #[allow(clippy::complexity)]
     fn run(&self) {
-        let config = app_config();
+        let config = APPLICATION.config();
         let project = &config.project;
         let bucket = &config.bucket;
         let image = &config.image;

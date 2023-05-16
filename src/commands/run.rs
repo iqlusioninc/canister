@@ -1,14 +1,15 @@
 use crate::prelude::*;
-use abscissa_core::{Command, Options, Runnable};
+use abscissa_core::{Command, Runnable};
+use clap::Parser;
 
 use super::DeployCommand;
 
-#[derive(Command, Debug, Options)]
+#[derive(Command, Debug, Parser)]
 pub struct RunCommand {
-    #[options(short = "c", long = "config")]
+    #[clap(short = 'c', long = "config")]
     pub config: Option<String>,
 
-    #[options(short = "v", long = "verbose")]
+    #[clap(short = 'v', long = "verbose")]
     pub verbose: bool,
 }
 
@@ -23,7 +24,7 @@ impl Default for RunCommand {
 
 impl Runnable for RunCommand {
     fn run(&self) {
-        let config = app_config();
+        let config = APPLICATION.config();
         let path = &config.run_command.path;
         let args = &config.run_command.args;
 

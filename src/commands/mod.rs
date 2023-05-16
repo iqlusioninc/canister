@@ -1,4 +1,4 @@
-use abscissa_core::{Command, Configurable, Help, Runnable};
+use abscissa_core::{Command, Configurable, Runnable};
 use clap::Parser;
 use std::path::PathBuf;
 
@@ -9,23 +9,17 @@ mod version;
 pub use self::{deploy::DeployCommand, run::RunCommand, version::VersionCommand};
 use crate::config::{CanisterConfig, CONFIG_FILE_NAME};
 
-#[derive(Command, Debug, Default, Parser)]
+#[derive(Command, Debug, Parser, Runnable)]
 pub enum CanisterCommand {
-    #[options(help = "deploy application")]
+    /// subcommands for Deploy
     Deploy(DeployCommand),
 
-    #[options(help = "show help for a command")]
-    Help(Help<Self>),
-
-    #[options(help = "run application")]
+    /// subcommands for Run
     Run(RunCommand),
-
-    #[options(help = "display version information")]
-    Version(VersionCommand),
 }
 
 /// Entry point for the application.
-#[derive(Command, Debug, Clap)]
+#[derive(Command, Debug, Parser)]
 #[clap(author, about, version)]
 pub struct EntryPoint {
     /// CanisterCommand
@@ -52,12 +46,11 @@ impl CanisterCommand {
         match self {
             CanisterCommand::Deploy(deploy) => deploy.verbose,
             CanisterCommand::Run(run) => run.verbose,
-            _ => false,
         }
     }
 }
 
-impl Configurable<CanisterConfig> for EntryPoint {
+impl Configurable<CanisterConfig> for CanisterCommand {
     fn config_path(&self) -> Option<PathBuf> {
         match self {
             CanisterCommand::Deploy(deploy) => Some(PathBuf::from(
@@ -73,7 +66,6 @@ impl Configurable<CanisterConfig> for EntryPoint {
                     .map(|s| s.as_ref())
                     .unwrap_or(CONFIG_FILE_NAME),
             )),
-            _ => None,
         }
     }
 }
