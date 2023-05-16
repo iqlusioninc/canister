@@ -12,26 +12,13 @@ use abscissa_core::{
 pub static APPLICATION: AppCell<CanisterApplication> = AppCell::new();
 
 /// Canister Application
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct CanisterApplication {
     /// Application configuration.
     config: CfgCell<CanisterConfig>,
 
     /// Application state.
     state: application::State<Self>,
-}
-
-/// Initialize a new application instance.
-///
-/// By default no configuration is loaded, and the framework state is
-/// initialized to a default, empty state (no components, threads, etc).
-impl Default for CanisterApplication {
-    fn default() -> Self {
-        Self {
-            config: CfgCell::default(),
-            state: application::State::default(),
-        }
-    }
 }
 
 impl Application for CanisterApplication {
