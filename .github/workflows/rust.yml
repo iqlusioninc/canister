@@ -71,7 +71,7 @@ jobs:
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.64.0 # MSRV
+          toolchain: 1.69.0 # MSRV
           override: true
 
       - name: Install libudev-dev
