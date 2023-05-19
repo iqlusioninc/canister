@@ -48,3 +48,15 @@ jobs:
           command: fmt
           args: --all -- --check
 
+
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: 1.65.0
+          components: clippy
+          override: true
+      - run: cargo clippy --all --all-features -- -D warnings
