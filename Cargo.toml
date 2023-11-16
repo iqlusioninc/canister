@@ -14,7 +14,7 @@ keywords    = ["container", "devops", "docker", "deployment", "systemd"]
 [dependencies]
 clap = "4"
 hex = "0.4"
-hyper = "0.14"
+hyper = "1.0"
 percent-encoding = "2"
 libflate = "2.0"
 log = "0.4"
