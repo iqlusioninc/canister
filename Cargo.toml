@@ -18,7 +18,7 @@ hyper = "1.4"
 percent-encoding = "2"
 libflate = "2.1"
 log = "0.4"
-os_pipe = "1.1"
+os_pipe = "1.2"
 reqwest = "0.9"
 thiserror = "1"
 serde = { version = "1", features = ["serde_derive"] }
