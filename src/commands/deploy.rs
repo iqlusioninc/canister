@@ -1,4 +1,5 @@
 use crate::gcp::{Manifest, Storage, Token};
+use crate::application::APPLICATION;
 use crate::prelude::*;
 use crate::unpacker::{HexDigest};
 use abscissa_core::{Command, Runnable};
@@ -8,6 +9,7 @@ use std::process;
 use std::fs;
 use std::io;
 use std::os::unix;
+use std::path::PathBuf;
 
 #[derive(Command, Debug, Default, Parser)]
 pub struct DeployCommand {
@@ -20,7 +22,8 @@ pub struct DeployCommand {
 
 impl Runnable for DeployCommand {
     #[allow(clippy::complexity)]
-    fn run(&self) {
+     fn run(&self) {
+
         let config = APPLICATION.config();
         let project = &config.project;
         let bucket = &config.bucket;
@@ -34,7 +37,15 @@ impl Runnable for DeployCommand {
             process::exit(1);
         });
 
-        let (image_id, m) = Manifest::get(&token, project, image, tag, proxy).unwrap_or_else(|e| {
+        abscissa_tokio::run(&APPLICATION, async {
+            Self::perform(project, bucket, image, tag, object_path, path, proxy, &token);
+        });
+    }
+}
+
+impl DeployCommand {
+    async fn perform(project: &String, bucket: &String, image: &String, tag: &String, object_path: &String, path: &PathBuf, proxy: Option<&str>, token: &Token) {
+        let (image_id, m) = Manifest::get(&token, project, image, tag, proxy).await.unwrap_or_else(|e| {
             status_err!("Error, unable to fetch manifest: {}", e);
             process::exit(1);
         });
@@ -55,17 +66,17 @@ impl Runnable for DeployCommand {
             process::exit(1);
         });
         debug!("response: {:?}", response);
-/*      let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
-        unpacker.unpack().unwrap_or_else(|e| {
-            status_err!("Error, unable to unpack archive: {}", e);
-            process::exit(1);
-        });
-        let digest = unpacker.hex_digest();*/
+        /*      let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
+                unpacker.unpack().unwrap_or_else(|e| {
+                    status_err!("Error, unable to unpack archive: {}", e);
+                    process::exit(1);
+                });
+                let digest = unpacker.hex_digest();*/
         debug!("digest: ");
         status_ok!("Downloaded", "{} object from {}", object, bucket);
-      //  debug!("hasher result: {}", digest.as_str());
+        //  debug!("hasher result: {}", digest.as_str());
         debug!("layer digest: {}", layer_digest.as_str());
-    //    assert_eq!(digest, layer_digest);
+        //    assert_eq!(digest, layer_digest);
         let full_path = path.join(image_id.to_string());
         let full_tag = path.join("current");
         if let Err(e) = unix::fs::symlink(&full_path, &full_tag) {

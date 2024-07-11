@@ -7,6 +7,7 @@ use abscissa_core::{
     config::{self, CfgCell},
     trace, Application, FrameworkError, StandardPaths,
 };
+use abscissa_tokio::TokioComponent;
 
 /// Application state
 pub static APPLICATION: AppCell<CanisterApplication> = AppCell::new();
@@ -47,10 +48,12 @@ impl Application for CanisterApplication {
     /// beyond the default ones provided by the framework, this is the place
     /// to do so.
     fn register_components(&mut self, command: &Self::Cmd) -> Result<(), FrameworkError> {
-        let components = self.framework_components(command)?;
+        let mut components = self.framework_components(command)?;
 
-        let mut component_registry = self.state.components_mut();
-        component_registry.register(components)
+        // Create `TokioComponent` and add it to your app's components here:
+        components.push(Box::new(TokioComponent::new()?));
+
+        self.state.components_mut().register(components)
     }
 
     /// Post-configuration lifecycle callback.
