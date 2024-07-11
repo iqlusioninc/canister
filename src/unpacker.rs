@@ -1,4 +1,4 @@
-use bytes::{Bytes, Buf};
+use bytes::{Buf, Bytes};
 //use crate::error::Error;
 //use libflate::gzip::Decoder;
 use sha2::{Digest, Sha256};

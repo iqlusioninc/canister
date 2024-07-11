@@ -1,7 +1,7 @@
-use crate::gcp::{Manifest, Storage, Token};
 use crate::application::APPLICATION;
+use crate::gcp::{Manifest, Storage, Token};
 use crate::prelude::*;
-use crate::unpacker::{HexDigest};
+use crate::unpacker::HexDigest;
 use abscissa_core::{Command, Runnable};
 use clap::Parser;
 use std::process;
@@ -22,8 +22,7 @@ pub struct DeployCommand {
 
 impl Runnable for DeployCommand {
     #[allow(clippy::complexity)]
-     fn run(&self) {
-
+    fn run(&self) {
         let config = APPLICATION.config();
         let project = &config.project;
         let bucket = &config.bucket;
@@ -38,17 +37,37 @@ impl Runnable for DeployCommand {
         });
 
         abscissa_tokio::run(&APPLICATION, async {
-            Self::perform(project, bucket, image, tag, object_path, path, proxy, &token);
+            Self::perform(
+                project,
+                bucket,
+                image,
+                tag,
+                object_path,
+                path,
+                proxy,
+                &token,
+            );
         });
     }
 }
 
 impl DeployCommand {
-    async fn perform(project: &String, bucket: &String, image: &String, tag: &String, object_path: &String, path: &PathBuf, proxy: Option<&str>, token: &Token) {
-        let (image_id, m) = Manifest::get(&token, project, image, tag, proxy).await.unwrap_or_else(|e| {
-            status_err!("Error, unable to fetch manifest: {}", e);
-            process::exit(1);
-        });
+    async fn perform(
+        project: &String,
+        bucket: &String,
+        image: &String,
+        tag: &String,
+        object_path: &String,
+        path: &PathBuf,
+        proxy: Option<&str>,
+        token: &Token,
+    ) {
+        let (image_id, m) = Manifest::get(&token, project, image, tag, proxy)
+            .await
+            .unwrap_or_else(|e| {
+                status_err!("Error, unable to fetch manifest: {}", e);
+                process::exit(1);
+            });
         debug!("{}", image_id);
         let layers_len = m.layers.len();
         debug!("{:?}", layers_len);
@@ -67,11 +86,11 @@ impl DeployCommand {
         });
         debug!("response: {:?}", response);
         /*      let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
-                unpacker.unpack().unwrap_or_else(|e| {
-                    status_err!("Error, unable to unpack archive: {}", e);
-                    process::exit(1);
-                });
-                let digest = unpacker.hex_digest();*/
+        unpacker.unpack().unwrap_or_else(|e| {
+            status_err!("Error, unable to unpack archive: {}", e);
+            process::exit(1);
+        });
+        let digest = unpacker.hex_digest();*/
         debug!("digest: ");
         status_ok!("Downloaded", "{} object from {}", object, bucket);
         //  debug!("hasher result: {}", digest.as_str());
