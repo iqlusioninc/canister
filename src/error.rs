@@ -83,3 +83,9 @@ impl From<reqwest::Error> for Error {
         Error(ErrorKind::ParseError.context(err).into())
     }
 }
+
+impl From<url::ParseError> for Error {
+    fn from(err: url::ParseError) -> Self {
+        Error(ErrorKind::ParseError.context(err).into())
+    }
+}

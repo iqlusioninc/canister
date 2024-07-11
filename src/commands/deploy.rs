@@ -36,7 +36,7 @@ impl Runnable for DeployCommand {
             process::exit(1);
         });
 
-        abscissa_tokio::run(&APPLICATION, async {
+        let _ = abscissa_tokio::run(&APPLICATION, async {
             Self::perform(
                 project,
                 bucket,
@@ -80,10 +80,12 @@ impl DeployCommand {
         debug!("{:?}", &layer_digest);
 
         let object = format!("{}/sha256:{}", object_path, layer_digest.as_str());
-        let response = Storage::get(&token, bucket, &object, proxy).unwrap_or_else(|e| {
-            status_err!("Error, unable to download object from bucket: {}", e);
-            process::exit(1);
-        });
+        let response = Storage::get(&token, bucket, &object, proxy)
+            .await
+            .unwrap_or_else(|e| {
+                status_err!("Error, unable to download object from bucket: {}", e);
+                process::exit(1);
+            });
         debug!("response: {:?}", response);
         /*      let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
         unpacker.unpack().unwrap_or_else(|e| {
