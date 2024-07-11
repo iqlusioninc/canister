@@ -37,7 +37,7 @@ impl fmt::Display for ImageId {
 }
 
 impl Manifest {
-    pub fn get(
+    pub async fn get(
         token: &oauth::Token,
         project: &str,
         image: &str,
@@ -62,7 +62,7 @@ impl Manifest {
 
         let url = format!("https://gcr.io/v2/{}/{}/manifests/{}", project, image, tag);
 
-        let mut response = client.get(url.as_str()).send()?;
+        let response = client.get(url.as_str()).send().await?;
 
         let docker_digest_header = response
             .headers()
@@ -80,7 +80,7 @@ impl Manifest {
         debug!("{:?}", docker_digest);
         debug!("response = {:?}", response);
 
-        let body = response.text()?;
+        let body = response.text().await?;
         debug!("body = {:?}", body);
         let image_id = ImageId(hex::encode(Sha256::digest(body.as_bytes())));
         assert_eq!(image_id.0, *docker_digest);
