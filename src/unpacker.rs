@@ -1,15 +1,17 @@
-use crate::error::Error;
-use libflate::gzip::Decoder;
+use bytes::{Bytes, Buf};
+//use crate::error::Error;
+//use libflate::gzip::Decoder;
 use sha2::{Digest, Sha256};
 use std::io::{self, Read};
-use std::path::PathBuf;
+//use std::path::PathBuf;
+use tokio_stream::Stream;
 
-pub struct Unpacker<R: Read> {
+/*pub struct Unpacker<R> {
     hasher: Hasher<R>,
     path: PathBuf,
-}
+}*/
 
-impl<R: Read> Unpacker<R> {
+/*impl<R: Stream<Item = reqwest::Result<Bytes>>> Unpacker<R> {
     pub fn new(reader: R, path: impl Into<PathBuf>) -> Self {
         let hasher = Hasher::new(reader);
         Self {
@@ -30,14 +32,14 @@ impl<R: Read> Unpacker<R> {
         io::copy(&mut self.hasher, &mut io::sink()).unwrap();
         self.hasher.hex_digest()
     }
-}
+}*/
 
-struct Hasher<R: Read> {
+struct Hasher<R: Stream<Item = reqwest::Result<Bytes>>> {
     reader: R,
     digest: Sha256,
 }
 
-impl<R: Read> Hasher<R> {
+impl<R: Stream<Item = reqwest::Result<Bytes>>> Hasher<R> {
     pub fn new(reader: R) -> Self {
         Self {
             reader,
@@ -50,7 +52,7 @@ impl<R: Read> Hasher<R> {
     }
 }
 
-impl<R: Read> Read for Hasher<R> {
+impl<R: Stream<Item = reqwest::Result<Bytes>>> Read for Hasher<R> {
     fn read(&mut self, buffer: &mut [u8]) -> io::Result<usize> {
         let nbytes = self.reader.read(buffer)?;
         self.digest.update(&buffer[..nbytes]);

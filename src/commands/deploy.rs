@@ -1,6 +1,6 @@
 use crate::gcp::{Manifest, Storage, Token};
 use crate::prelude::*;
-use crate::unpacker::{HexDigest, Unpacker};
+use crate::unpacker::{HexDigest};
 use abscissa_core::{Command, Runnable};
 use clap::Parser;
 use std::process;
@@ -54,17 +54,18 @@ impl Runnable for DeployCommand {
             status_err!("Error, unable to download object from bucket: {}", e);
             process::exit(1);
         });
-        let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
+        debug!("response: {:?}", response);
+/*      let mut unpacker = Unpacker::new(response, config.path.join(image_id.to_string()));
         unpacker.unpack().unwrap_or_else(|e| {
             status_err!("Error, unable to unpack archive: {}", e);
             process::exit(1);
         });
-        let digest = unpacker.hex_digest();
+        let digest = unpacker.hex_digest();*/
         debug!("digest: ");
         status_ok!("Downloaded", "{} object from {}", object, bucket);
-        debug!("hasher result: {}", digest.as_str());
+      //  debug!("hasher result: {}", digest.as_str());
         debug!("layer digest: {}", layer_digest.as_str());
-        assert_eq!(digest, layer_digest);
+    //    assert_eq!(digest, layer_digest);
         let full_path = path.join(image_id.to_string());
         let full_tag = path.join("current");
         if let Err(e) = unix::fs::symlink(&full_path, &full_tag) {

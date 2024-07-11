@@ -66,12 +66,6 @@ impl From<io::Error> for Error {
     }
 }
 
-impl From<reqwest::Error> for Error {
-    fn from(err: reqwest::Error) -> Self {
-        ErrorKind::ReqwestError.context(err).into()
-    }
-}
-
 impl From<serde_json::Error> for Error {
     fn from(err: serde_json::Error) -> Self {
         ErrorKind::ParseError.context(err).into()
@@ -84,8 +78,8 @@ impl From<FromUtf8Error> for Error {
     }
 }
 
-impl From<reqwest::UrlError> for Error {
-    fn from(err: reqwest::UrlError) -> Self {
+impl From<reqwest::Error> for Error {
+    fn from(err: reqwest::Error) -> Self {
         Error(ErrorKind::ParseError.context(err).into())
     }
 }
