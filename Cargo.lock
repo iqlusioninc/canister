@@ -240,7 +240,7 @@ dependencies = [
  "abscissa_core",
  "clap",
  "hex",
- "hyper 1.4.1",
+ "hyper 1.5.1",
  "libflate",
  "log",
  "once_cell",
@@ -814,9 +814,9 @@ dependencies = [
 
 [[package]]
 name = "hyper"
-version = "1.4.1"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50dfd22e0e76d0f662d429a5f80fcaf3855009297eab6a0a9f8543834744ba05"
+checksum = "97818827ef4f364230e16705d4706e2897df2bb60617d6ca15d598025a3c481f"
 dependencies = [
  "bytes 1.7.1",
  "http 1.1.0",
